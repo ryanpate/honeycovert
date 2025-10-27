@@ -13,6 +13,8 @@ A user-friendly Flask web application that converts iPhone HEIC images to PNG fo
 
 ## Installation
 
+### For Local Development
+
 1. Install Python 3.8 or higher
 
 2. Install the required dependencies:
@@ -33,6 +35,12 @@ sudo apt-get install libheif-dev
 # Fedora
 sudo dnf install libheif-devel
 ```
+
+### For Deployment
+
+**⚠️ Important:** Netlify does NOT support Flask applications. See **[DEPLOYMENT.md](DEPLOYMENT.md)** for proper deployment options.
+
+**Recommended:** Use Render.com (free tier available) - see detailed instructions in DEPLOYMENT.md
 
 ## Usage
 
@@ -108,4 +116,3 @@ For issues or questions, please check:
 1. That all dependencies are installed correctly
 2. That your HEIC files are valid and not corrupted
 3. That you have sufficient disk space for temporary file storage
-# honeycovert

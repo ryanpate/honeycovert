@@ -142,4 +142,6 @@ def cleanup():
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
+    # For local development only
+    # In production, gunicorn will run the app
     app.run(debug=True, host='0.0.0.0', port=5000)
