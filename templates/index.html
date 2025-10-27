@@ -3,7 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HEIC to PNG Converter</title>
+    
+    <!-- SEO Meta Tags -->
+    <title>HoneyConvert - Free HEIC to PNG Converter Online | Convert iPhone Photos</title>
+    <meta name="description" content="Convert HEIC and HEIF images to PNG format instantly. Free online tool to convert iPhone photos with multiple size options. Fast, secure, and easy to use.">
+    <meta name="keywords" content="HEIC to PNG, HEIF converter, iPhone photo converter, convert HEIC online, free image converter, HEIC to PNG free">
+    <meta name="author" content="HoneyConvert">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://honeyconvert.com/">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://honeyconvert.com/">
+    <meta property="og:title" content="HoneyConvert - Free HEIC to PNG Converter Online">
+    <meta property="og:description" content="Convert HEIC and HEIF images to PNG format instantly. Free online tool with multiple size options.">
+    <meta property="og:image" content="https://honeyconvert.com/static/og-image.png">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://honeyconvert.com/">
+    <meta property="twitter:title" content="HoneyConvert - Free HEIC to PNG Converter">
+    <meta property="twitter:description" content="Convert HEIC and HEIF images to PNG format instantly. Free online tool.">
+    <meta property="twitter:image" content="https://honeyconvert.com/static/og-image.png">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/static/favicon.png">
+    <link rel="apple-touch-icon" href="/static/apple-touch-icon.png">
+    
+    <!-- Schema.org structured data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "HoneyConvert",
+      "url": "https://honeyconvert.com",
+      "description": "Free online HEIC to PNG converter. Convert iPhone photos instantly with multiple size options.",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Any",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "featureList": [
+        "Convert HEIC to PNG",
+        "Convert HEIF to PNG",
+        "Batch conversion",
+        "Multiple size options",
+        "Drag and drop upload",
+        "Secure and private"
+      ]
+    }
+    </script>
+    
     <style>
         * {
             margin: 0;
@@ -252,6 +304,37 @@
             color: #666;
             text-align: center;
         }
+
+        footer {
+            margin-top: 40px;
+            padding: 20px;
+            text-align: center;
+            color: white;
+        }
+
+        footer a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 14px;
+            opacity: 0.9;
+            transition: opacity 0.3s ease;
+        }
+
+        footer a:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+
+        footer p {
+            margin-top: 15px;
+            font-size: 13px;
+            opacity: 0.8;
+        }
+
+        .footer-links {
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
@@ -286,6 +369,16 @@
         <div id="loader" class="loader"></div>
         <div id="statusMessage" class="status-message"></div>
     </div>
+
+    <footer>
+        <div class="footer-links">
+            <a href="/about">About</a>
+            <a href="/privacy">Privacy Policy</a>
+            <a href="/terms">Terms of Service</a>
+            <a href="/contact">Contact</a>
+        </div>
+        <p>&copy; 2024 HoneyConvert.com - Free HEIC to PNG Converter</p>
+    </footer>
 
     <script>
         const uploadArea = document.getElementById('uploadArea');
