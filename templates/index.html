@@ -206,6 +206,52 @@
             font-weight: 600;
             margin-top: 15px;
         }
+
+        .size-selector {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9ff;
+            border-radius: 10px;
+            border: 2px solid #667eea;
+        }
+
+        .size-selector label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .size-select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .size-select:hover {
+            border-color: #764ba2;
+        }
+
+        .size-select:focus {
+            outline: none;
+            border-color: #764ba2;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .size-hint {
+            margin-top: 8px;
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -223,6 +269,17 @@
 
         <div id="fileList" class="file-list"></div>
         <div id="fileCount" class="file-count"></div>
+
+        <div class="size-selector">
+            <label for="sizeSelect">Output Size:</label>
+            <select id="sizeSelect" class="size-select">
+                <option value="100">Original (100%)</option>
+                <option value="75" selected>Large (75%)</option>
+                <option value="50">Medium (50%)</option>
+                <option value="25">Small (25%)</option>
+            </select>
+            <div class="size-hint">Reduce size to save space and speed up uploads</div>
+        </div>
 
         <button id="convertBtn" class="convert-btn" disabled>Convert to PNG</button>
 
@@ -339,6 +396,10 @@
             selectedFiles.forEach(file => {
                 formData.append('files[]', file);
             });
+            
+            // Add size parameter from dropdown
+            const sizeSelect = document.getElementById('sizeSelect');
+            formData.append('size', sizeSelect.value);
 
             convertBtn.disabled = true;
             loader.style.display = 'block';

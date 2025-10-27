@@ -6,6 +6,7 @@ A user-friendly Flask web application that converts iPhone HEIC images to PNG fo
 
 - 🖼️ Convert multiple HEIC/HEIF files at once
 - 📁 Drag & drop or click to upload files
+- 📏 **Choose output size: Original, Large (75%), Medium (50%), or Small (25%)**
 - 💾 Maintains original filenames (just changes extension)
 - 📦 Single file downloads directly, multiple files in a ZIP
 - 🎨 Beautiful, responsive UI
@@ -63,8 +64,9 @@ http://localhost:5000
 ## How It Works
 
 1. **Upload**: Select one or more HEIC/HEIF files from your iPhone
-2. **Convert**: The server converts each file to PNG format, maintaining the original filename
-3. **Download**: 
+2. **Choose Size**: Select the output size (Original, Large, Medium, or Small) to reduce file size if needed
+3. **Convert**: The server converts each file to PNG format, maintaining the original filename
+4. **Download**: 
    - Single file: Downloads immediately as PNG
    - Multiple files: Downloads as a ZIP archive containing all converted PNGs
 

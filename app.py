@@ -21,8 +21,14 @@ ALLOWED_EXTENSIONS = {'heic', 'heif'}
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-def convert_heic_to_png(heic_path, output_path):
-    """Convert HEIC file to PNG"""
+def convert_heic_to_png(heic_path, output_path, size_percent=100):
+    """Convert HEIC file to PNG with optional resizing
+    
+    Args:
+        heic_path: Path to input HEIC file
+        output_path: Path to output PNG file
+        size_percent: Percentage to resize (100 = original, 75 = 75%, etc.)
+    """
     try:
         # Open the HEIC image
         image = Image.open(heic_path)
@@ -30,6 +36,14 @@ def convert_heic_to_png(heic_path, output_path):
         # Convert to RGB if necessary (HEIC can be in different color modes)
         if image.mode != 'RGB':
             image = image.convert('RGB')
+        
+        # Resize if requested
+        if size_percent != 100:
+            width, height = image.size
+            new_width = int(width * (size_percent / 100))
+            new_height = int(height * (size_percent / 100))
+            # Use LANCZOS for high-quality downsampling
+            image = image.resize((new_width, new_height), Image.Resampling.LANCZOS)
         
         # Save as PNG
         image.save(output_path, 'PNG')
@@ -52,6 +66,13 @@ def convert():
     if not files or files[0].filename == '':
         return jsonify({'error': 'No files selected'}), 400
     
+    # Get size parameter from form data (default to 100 = original size)
+    size_percent = int(request.form.get('size', 100))
+    
+    # Validate size parameter
+    if size_percent not in [100, 75, 50, 25]:
+        size_percent = 100
+    
     converted_files = []
     failed_files = []
     
@@ -72,8 +93,8 @@ def convert():
             png_filename = os.path.splitext(filename)[0] + '.png'
             png_path = os.path.join(batch_folder, png_filename)
             
-            # Convert to PNG
-            if convert_heic_to_png(heic_path, png_path):
+            # Convert to PNG with size parameter
+            if convert_heic_to_png(heic_path, png_path, size_percent):
                 converted_files.append({
                     'original': filename,
                     'converted': png_filename,
