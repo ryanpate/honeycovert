@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, send_file, jsonify, send_from_directory, make_response
+from flask_compress import Compress
 import os
 from PIL import Image
 from pillow_heif import register_heif_opener
@@ -13,8 +14,43 @@ app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024  # 100MB max file size
 app.config['UPLOAD_FOLDER'] = 'temp_uploads'
 
+# Enable gzip compression
+app.config['COMPRESS_MIMETYPES'] = [
+    'text/html', 'text/css', 'text/xml', 'text/javascript',
+    'application/json', 'application/javascript', 'application/xml'
+]
+app.config['COMPRESS_LEVEL'] = 6
+app.config['COMPRESS_MIN_SIZE'] = 500
+Compress(app)
+
 # Create temp folder if it doesn't exist
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+
+
+@app.after_request
+def add_security_headers(response):
+    """Add security and cache headers to all responses"""
+    # Security headers
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['X-Frame-Options'] = 'SAMEORIGIN'
+    response.headers['X-XSS-Protection'] = '1; mode=block'
+    response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
+    response.headers['Permissions-Policy'] = 'geolocation=(), microphone=(), camera=()'
+
+    # Cache headers based on content type
+    if request.path.startswith('/static/'):
+        # Static assets: cache for 1 year
+        response.headers['Cache-Control'] = 'public, max-age=31536000, immutable'
+    elif request.path in ['/', '/about', '/privacy', '/terms', '/contact',
+                          '/what-is-heic', '/heic-vs-png', '/why-iphone-uses-heic',
+                          '/how-to-convert-heic-to-png']:
+        # HTML pages: cache for 1 hour, revalidate
+        response.headers['Cache-Control'] = 'public, max-age=3600, must-revalidate'
+    elif request.path in ['/robots.txt', '/sitemap.xml']:
+        # SEO files: cache for 1 day
+        response.headers['Cache-Control'] = 'public, max-age=86400'
+
+    return response
 
 ALLOWED_EXTENSIONS = {'heic', 'heif'}
 
@@ -94,6 +130,10 @@ def heic_vs_png():
 def why_iphone_uses_heic():
     return render_template('why-iphone-uses-heic.html')
 
+@app.route('/how-to-convert-heic-to-png')
+def how_to_convert_heic_to_png():
+    return render_template('how-to-convert-heic-to-png.html')
+
 @app.route('/robots.txt')
 def robots():
     content = """User-agent: *
@@ -143,6 +183,12 @@ def sitemap():
     <lastmod>2025-12-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://honeyconvert.com/how-to-convert-heic-to-png</loc>
+    <lastmod>2025-12-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.95</priority>
   </url>
   <url>
     <loc>https://honeyconvert.com/privacy</loc>
