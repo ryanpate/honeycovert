@@ -43,7 +43,9 @@ def add_security_headers(response):
         response.headers['Cache-Control'] = 'public, max-age=31536000, immutable'
     elif request.path in ['/', '/about', '/privacy', '/terms', '/contact',
                           '/what-is-heic', '/heic-vs-png', '/why-iphone-uses-heic',
-                          '/how-to-convert-heic-to-png', '/heic-not-opening-windows']:
+                          '/how-to-convert-heic-to-png', '/heic-not-opening-windows',
+                          '/heic-to-jpeg-vs-png', '/batch-convert-heic',
+                          '/heic-converter-mac', '/convert-heic-without-losing-quality']:
         # HTML pages: cache for 1 hour, revalidate
         response.headers['Cache-Control'] = 'public, max-age=3600, must-revalidate'
     elif request.path in ['/robots.txt', '/sitemap.xml']:
@@ -138,6 +140,22 @@ def how_to_convert_heic_to_png():
 def heic_not_opening_windows():
     return render_template('heic-not-opening-windows.html')
 
+@app.route('/heic-to-jpeg-vs-png')
+def heic_to_jpeg_vs_png():
+    return render_template('heic-to-jpeg-vs-png.html')
+
+@app.route('/batch-convert-heic')
+def batch_convert_heic():
+    return render_template('batch-convert-heic.html')
+
+@app.route('/heic-converter-mac')
+def heic_converter_mac():
+    return render_template('heic-converter-mac.html')
+
+@app.route('/convert-heic-without-losing-quality')
+def convert_heic_without_losing_quality():
+    return render_template('convert-heic-without-losing-quality.html')
+
 @app.route('/robots.txt')
 def robots():
     content = """User-agent: *
@@ -217,6 +235,30 @@ def sitemap():
     <lastmod>2025-11-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://honeyconvert.com/heic-to-jpeg-vs-png</loc>
+    <lastmod>2025-12-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://honeyconvert.com/batch-convert-heic</loc>
+    <lastmod>2025-12-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://honeyconvert.com/heic-converter-mac</loc>
+    <lastmod>2025-12-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://honeyconvert.com/convert-heic-without-losing-quality</loc>
+    <lastmod>2025-12-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
   </url>
 </urlset>"""
     response = make_response(content)
