@@ -43,7 +43,7 @@ def add_security_headers(response):
         response.headers['Cache-Control'] = 'public, max-age=31536000, immutable'
     elif request.path in ['/', '/about', '/privacy', '/terms', '/contact',
                           '/what-is-heic', '/heic-vs-png', '/why-iphone-uses-heic',
-                          '/how-to-convert-heic-to-png']:
+                          '/how-to-convert-heic-to-png', '/heic-not-opening-windows']:
         # HTML pages: cache for 1 hour, revalidate
         response.headers['Cache-Control'] = 'public, max-age=3600, must-revalidate'
     elif request.path in ['/robots.txt', '/sitemap.xml']:
@@ -134,6 +134,10 @@ def why_iphone_uses_heic():
 def how_to_convert_heic_to_png():
     return render_template('how-to-convert-heic-to-png.html')
 
+@app.route('/heic-not-opening-windows')
+def heic_not_opening_windows():
+    return render_template('heic-not-opening-windows.html')
+
 @app.route('/robots.txt')
 def robots():
     content = """User-agent: *
@@ -189,6 +193,12 @@ def sitemap():
     <lastmod>2025-12-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://honeyconvert.com/heic-not-opening-windows</loc>
+    <lastmod>2025-12-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
   </url>
   <url>
     <loc>https://honeyconvert.com/privacy</loc>
