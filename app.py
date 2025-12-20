@@ -21,22 +21,24 @@ ALLOWED_EXTENSIONS = {'heic', 'heif'}
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-def convert_heic_to_png(heic_path, output_path, size_percent=100):
-    """Convert HEIC file to PNG with optional resizing
-    
+def convert_heic_to_image(heic_path, output_path, output_format='png', size_percent=100, quality=90):
+    """Convert HEIC file to specified format with optional resizing
+
     Args:
         heic_path: Path to input HEIC file
-        output_path: Path to output PNG file
+        output_path: Path to output file
+        output_format: Output format ('png', 'jpeg', 'webp')
         size_percent: Percentage to resize (100 = original, 75 = 75%, etc.)
+        quality: Quality for JPEG/WebP (1-100, ignored for PNG)
     """
     try:
         # Open the HEIC image
         image = Image.open(heic_path)
-        
+
         # Convert to RGB if necessary (HEIC can be in different color modes)
         if image.mode != 'RGB':
             image = image.convert('RGB')
-        
+
         # Resize if requested
         if size_percent != 100:
             width, height = image.size
@@ -44,9 +46,17 @@ def convert_heic_to_png(heic_path, output_path, size_percent=100):
             new_height = int(height * (size_percent / 100))
             # Use LANCZOS for high-quality downsampling
             image = image.resize((new_width, new_height), Image.Resampling.LANCZOS)
-        
-        # Save as PNG
-        image.save(output_path, 'PNG')
+
+        # Save in requested format
+        if output_format == 'png':
+            image.save(output_path, 'PNG', optimize=True)
+        elif output_format == 'jpeg':
+            image.save(output_path, 'JPEG', quality=quality, optimize=True)
+        elif output_format == 'webp':
+            image.save(output_path, 'WEBP', quality=quality, optimize=True)
+        else:
+            image.save(output_path, 'PNG', optimize=True)
+
         return True
     except Exception as e:
         print(f"Error converting {heic_path}: {str(e)}")
@@ -72,6 +82,18 @@ def terms():
 def contact():
     return render_template('contact.html')
 
+@app.route('/what-is-heic')
+def what_is_heic():
+    return render_template('what-is-heic.html')
+
+@app.route('/heic-vs-png')
+def heic_vs_png():
+    return render_template('heic-vs-png.html')
+
+@app.route('/why-iphone-uses-heic')
+def why_iphone_uses_heic():
+    return render_template('why-iphone-uses-heic.html')
+
 @app.route('/robots.txt')
 def robots():
     content = """User-agent: *
@@ -94,15 +116,33 @@ def sitemap():
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://honeyconvert.com/</loc>
-    <lastmod>2025-11-18</lastmod>
+    <lastmod>2025-12-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://honeyconvert.com/about</loc>
-    <lastmod>2025-11-18</lastmod>
+    <lastmod>2025-12-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://honeyconvert.com/what-is-heic</loc>
+    <lastmod>2025-12-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://honeyconvert.com/heic-vs-png</loc>
+    <lastmod>2025-12-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://honeyconvert.com/why-iphone-uses-heic</loc>
+    <lastmod>2025-12-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
   </url>
   <url>
     <loc>https://honeyconvert.com/privacy</loc>
@@ -131,45 +171,59 @@ def sitemap():
 def convert():
     if 'files[]' not in request.files:
         return jsonify({'error': 'No files provided'}), 400
-    
+
     files = request.files.getlist('files[]')
-    
+
     if not files or files[0].filename == '':
         return jsonify({'error': 'No files selected'}), 400
-    
+
     # Get size parameter from form data (default to 100 = original size)
     size_percent = int(request.form.get('size', 100))
-    
+
     # Validate size parameter
     if size_percent not in [100, 75, 50, 25]:
         size_percent = 100
-    
+
+    # Get output format (default to png)
+    output_format = request.form.get('format', 'png').lower()
+    if output_format not in ['png', 'jpeg', 'webp']:
+        output_format = 'png'
+
+    # Get quality parameter for JPEG/WebP (default 90)
+    quality = int(request.form.get('quality', 90))
+    if quality < 1 or quality > 100:
+        quality = 90
+
+    # Format-specific settings
+    format_extensions = {'png': '.png', 'jpeg': '.jpg', 'webp': '.webp'}
+    format_mimetypes = {'png': 'image/png', 'jpeg': 'image/jpeg', 'webp': 'image/webp'}
+
     converted_files = []
     failed_files = []
-    
+
     # Create a temporary directory for this conversion batch
     batch_id = os.urandom(16).hex()
     batch_folder = os.path.join(app.config['UPLOAD_FOLDER'], batch_id)
     os.makedirs(batch_folder, exist_ok=True)
-    
+
     for file in files:
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            
+
             # Save uploaded HEIC file
             heic_path = os.path.join(batch_folder, filename)
             file.save(heic_path)
-            
-            # Create PNG filename (replace .heic/.heif with .png)
-            png_filename = os.path.splitext(filename)[0] + '.png'
-            png_path = os.path.join(batch_folder, png_filename)
-            
-            # Convert to PNG with size parameter
-            if convert_heic_to_png(heic_path, png_path, size_percent):
+
+            # Create output filename with correct extension
+            output_filename = os.path.splitext(filename)[0] + format_extensions[output_format]
+            output_path = os.path.join(batch_folder, output_filename)
+
+            # Convert to requested format
+            if convert_heic_to_image(heic_path, output_path, output_format, size_percent, quality):
                 converted_files.append({
                     'original': filename,
-                    'converted': png_filename,
-                    'path': png_path
+                    'converted': output_filename,
+                    'path': output_path
                 })
                 # Remove the original HEIC file to save space
                 os.remove(heic_path)
@@ -179,38 +233,38 @@ def convert():
                     os.remove(heic_path)
         else:
             failed_files.append(file.filename)
-    
+
     if not converted_files:
         return jsonify({'error': 'No files were successfully converted'}), 400
-    
+
     # If only one file, return it directly
     if len(converted_files) == 1:
-        png_path = converted_files[0]['path']
-        png_filename = converted_files[0]['converted']
-        
+        output_path = converted_files[0]['path']
+        output_filename = converted_files[0]['converted']
+
         return send_file(
-            png_path,
+            output_path,
             as_attachment=True,
-            download_name=png_filename,
-            mimetype='image/png'
+            download_name=output_filename,
+            mimetype=format_mimetypes[output_format]
         )
-    
+
     # If multiple files, create a ZIP archive
     zip_buffer = io.BytesIO()
     with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
         for file_info in converted_files:
             zip_file.write(file_info['path'], file_info['converted'])
-    
+
     zip_buffer.seek(0)
-    
+
     # Clean up temporary files
     for file_info in converted_files:
         if os.path.exists(file_info['path']):
             os.remove(file_info['path'])
-    
+
     if os.path.exists(batch_folder):
         os.rmdir(batch_folder)
-    
+
     return send_file(
         zip_buffer,
         as_attachment=True,

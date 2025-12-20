@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- SEO Meta Tags -->
-    <title>HoneyConvert - Free HEIC to PNG Converter Online | Convert iPhone Photos</title>
-    <meta name="description" content="Convert HEIC and HEIF images to PNG format instantly. Free online tool to convert iPhone photos with multiple size options. Fast, secure, and easy to use. No registration required.">
-    <meta name="keywords" content="HEIC to PNG, HEIF converter, iPhone photo converter, convert HEIC online, free image converter, HEIC to PNG free, iOS photo converter, Apple photo format, batch image converter">
+    <title>HoneyConvert - Free HEIC to PNG, JPEG, WebP Converter | Convert iPhone Photos</title>
+    <meta name="description" content="Convert HEIC and HEIF images to PNG, JPEG, or WebP format instantly. Free online tool to convert iPhone photos with multiple size and format options. Fast, secure, and easy to use.">
+    <meta name="keywords" content="HEIC to PNG, HEIC to JPEG, HEIC to WebP, HEIF converter, iPhone photo converter, convert HEIC online, free image converter, iOS photo converter, Apple photo format, batch image converter">
     <meta name="author" content="HoneyConvert">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
     <link rel="canonical" href="https://honeyconvert.com/">
@@ -22,8 +22,8 @@
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://honeyconvert.com/">
-    <meta property="og:title" content="HoneyConvert - Free HEIC to PNG Converter Online">
-    <meta property="og:description" content="Convert HEIC and HEIF images to PNG format instantly. Free online tool with multiple size options.">
+    <meta property="og:title" content="HoneyConvert - Free HEIC to PNG, JPEG, WebP Converter">
+    <meta property="og:description" content="Convert HEIC and HEIF images to PNG, JPEG, or WebP format instantly. Free online tool with multiple size and format options.">
     <meta property="og:image" content="https://honeyconvert.com/static/og-image.png">
     <meta property="og:site_name" content="HoneyConvert">
     <meta property="og:locale" content="en_US">
@@ -31,8 +31,8 @@
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://honeyconvert.com/">
-    <meta property="twitter:title" content="HoneyConvert - Free HEIC to PNG Converter">
-    <meta property="twitter:description" content="Convert HEIC and HEIF images to PNG format instantly. Free online tool.">
+    <meta property="twitter:title" content="HoneyConvert - Free HEIC to PNG, JPEG, WebP Converter">
+    <meta property="twitter:description" content="Convert HEIC and HEIF images to PNG, JPEG, or WebP instantly. Free online tool.">
     <meta property="twitter:image" content="https://honeyconvert.com/static/og-image.png">
 
     <!-- Favicon -->
@@ -63,11 +63,11 @@
       "@type": "WebApplication",
       "name": "HoneyConvert",
       "url": "https://honeyconvert.com",
-      "description": "Free online HEIC to PNG converter. Convert iPhone photos instantly with multiple size options.",
+      "description": "Free online HEIC converter. Convert iPhone photos to PNG, JPEG, or WebP instantly with multiple size options.",
       "applicationCategory": "UtilitiesApplication",
       "operatingSystem": "Any",
       "browserRequirements": "Requires JavaScript. Works on all modern browsers.",
-      "softwareVersion": "1.0",
+      "softwareVersion": "2.0",
       "offers": {
         "@type": "Offer",
         "price": "0",
@@ -75,9 +75,12 @@
       },
       "featureList": [
         "Convert HEIC to PNG",
-        "Convert HEIF to PNG",
+        "Convert HEIC to JPEG",
+        "Convert HEIC to WebP",
+        "Convert HEIF to PNG, JPEG, WebP",
         "Batch conversion",
         "Multiple size options (100%, 75%, 50%, 25%)",
+        "Multiple output formats",
         "Drag and drop upload",
         "Secure and private",
         "No registration required",
@@ -382,15 +385,21 @@
             margin-top: 15px;
         }
 
-        .size-selector {
+        .options-row {
             margin-top: 20px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .option-group {
+            flex: 1;
             padding: 15px;
             background: #f8f9ff;
             border-radius: 10px;
             border: 2px solid #667eea;
         }
 
-        .size-selector label {
+        .option-group label {
             display: block;
             color: #333;
             font-weight: 600;
@@ -398,7 +407,7 @@
             font-size: 14px;
         }
 
-        .size-select {
+        .option-select {
             width: 100%;
             padding: 10px;
             border: 2px solid #667eea;
@@ -411,21 +420,30 @@
             transition: all 0.3s ease;
         }
 
-        .size-select:hover {
+        .option-select:hover {
             border-color: #764ba2;
         }
 
-        .size-select:focus {
+        .option-select:focus {
             outline: none;
             border-color: #764ba2;
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
-        .size-hint {
-            margin-top: 8px;
+        .format-hint {
+            margin-top: 12px;
             font-size: 12px;
             color: #666;
             text-align: center;
+            padding: 8px;
+            background: #f0f1ff;
+            border-radius: 6px;
+        }
+
+        @media (max-width: 500px) {
+            .options-row {
+                flex-direction: column;
+            }
         }
 
         footer {
@@ -472,7 +490,7 @@
 <body>
     <div class="container">
         <h1>📱 HoneyConvert</h1>
-        <p class="subtitle">Convert your iPhone photos to PNG format instantly</p>
+        <p class="subtitle">Convert your iPhone photos to PNG, JPEG, or WebP instantly</p>
 
         <div class="upload-area" id="uploadArea">
             <div class="upload-icon">📤</div>
@@ -485,16 +503,26 @@
         <div id="fileList" class="file-list"></div>
         <div id="fileCount" class="file-count"></div>
 
-        <div class="size-selector">
-            <label for="sizeSelect">Output Size:</label>
-            <select id="sizeSelect" class="size-select">
-                <option value="100">Original (100%)</option>
-                <option value="75" selected>Large (75%)</option>
-                <option value="50">Medium (50%)</option>
-                <option value="25">Small (25%)</option>
-            </select>
-            <div class="size-hint">Reduce size to save space and speed up uploads</div>
+        <div class="options-row">
+            <div class="option-group">
+                <label for="formatSelect">Output Format:</label>
+                <select id="formatSelect" class="option-select">
+                    <option value="png">PNG (Lossless)</option>
+                    <option value="jpeg">JPEG (Smaller)</option>
+                    <option value="webp">WebP (Modern)</option>
+                </select>
+            </div>
+            <div class="option-group">
+                <label for="sizeSelect">Output Size:</label>
+                <select id="sizeSelect" class="option-select">
+                    <option value="100">Original (100%)</option>
+                    <option value="75" selected>Large (75%)</option>
+                    <option value="50">Medium (50%)</option>
+                    <option value="25">Small (25%)</option>
+                </select>
+            </div>
         </div>
+        <div class="format-hint" id="formatHint">PNG: Best quality, larger files. No compression artifacts.</div>
 
         <button id="convertBtn" class="convert-btn" disabled>Convert to PNG</button>
 
@@ -509,7 +537,7 @@
             <a href="/terms">Terms of Service</a>
             <a href="/contact">Contact</a>
         </div>
-        <p>&copy; 2025 HoneyConvert.com - Free HEIC to PNG Converter</p>
+        <p>&copy; 2025 HoneyConvert.com - Free HEIC to PNG, JPEG, WebP Converter</p>
     </footer>
 
     <script>
@@ -520,8 +548,24 @@
         const convertBtn = document.getElementById('convertBtn');
         const statusMessage = document.getElementById('statusMessage');
         const loader = document.getElementById('loader');
+        const formatSelect = document.getElementById('formatSelect');
+        const formatHint = document.getElementById('formatHint');
 
         let selectedFiles = [];
+
+        // Format hints
+        const formatHints = {
+            png: 'PNG: Best quality, larger files. No compression artifacts.',
+            jpeg: 'JPEG: Smaller files, great for photos. Slight quality loss.',
+            webp: 'WebP: Modern format, smallest files. Best of both worlds.'
+        };
+
+        // Update button text and hint when format changes
+        formatSelect.addEventListener('change', () => {
+            const format = formatSelect.value.toUpperCase();
+            convertBtn.textContent = `Convert to ${format}`;
+            formatHint.textContent = formatHints[formatSelect.value];
+        });
 
         // Click to upload
         uploadArea.addEventListener('click', () => {
@@ -621,14 +665,18 @@
             selectedFiles.forEach(file => {
                 formData.append('files[]', file);
             });
-            
+
             // Add size parameter from dropdown
             const sizeSelect = document.getElementById('sizeSelect');
             formData.append('size', sizeSelect.value);
 
+            // Add format parameter
+            formData.append('format', formatSelect.value);
+
+            const formatName = formatSelect.value.toUpperCase();
             convertBtn.disabled = true;
             loader.style.display = 'block';
-            showStatus('Converting your images...', 'info');
+            showStatus(`Converting your images to ${formatName}...`, 'info');
 
             try {
                 const response = await fetch('/convert', {
