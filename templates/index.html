@@ -917,6 +917,29 @@
                 </select>
             </div>
         </div>
+        <div class="options-row">
+            <div class="option-group">
+                <label for="rotateSelect">Rotate:</label>
+                <select id="rotateSelect" class="option-select">
+                    <option value="0">No Rotation</option>
+                    <option value="90">90° Clockwise</option>
+                    <option value="180">180°</option>
+                    <option value="270">90° Counter-clockwise</option>
+                </select>
+            </div>
+            <div class="option-group">
+                <label for="cropSelect">Crop:</label>
+                <select id="cropSelect" class="option-select">
+                    <option value="none">No Crop (Original)</option>
+                    <option value="1:1">Square (1:1)</option>
+                    <option value="4:3">Landscape (4:3)</option>
+                    <option value="3:4">Portrait (3:4)</option>
+                    <option value="16:9">Widescreen (16:9)</option>
+                    <option value="9:16">Vertical (9:16)</option>
+                    <option value="3:2">Photo (3:2)</option>
+                </select>
+            </div>
+        </div>
         <div class="format-hint" id="formatHint">PNG: Best quality, larger files. No compression artifacts.</div>
 
         <button id="convertBtn" class="convert-btn" disabled>Convert to PNG</button>
@@ -1178,6 +1201,14 @@
 
             // Add format parameter
             formData.append('format', formatSelect.value);
+
+            // Add rotate parameter
+            const rotateSelect = document.getElementById('rotateSelect');
+            formData.append('rotate', rotateSelect.value);
+
+            // Add crop parameter
+            const cropSelect = document.getElementById('cropSelect');
+            formData.append('crop', cropSelect.value);
 
             const formatName = formatSelect.value.toUpperCase();
             convertBtn.disabled = true;

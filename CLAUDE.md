@@ -77,7 +77,7 @@ HoneyConvert is a free online HEIC to PNG/JPEG/WebP converter built with Flask a
 - [ ] Submit to free web directories
 
 ## LOW PRIORITY - Future Enhancements
-- [ ] Add image editing features (crop, rotate)
+- [x] Add image editing features (crop, rotate) - completed 2026-01-05
 - [ ] Implement URL-based conversion
 - [ ] Create browser extension
 - [ ] Build mobile app versions
@@ -95,6 +95,7 @@ gunicorn app:app
 ```
 
 ## Recent Changes
+- 2026-01-05: Added image editing features (rotate: 0°/90°/180°/270°, crop: 1:1, 4:3, 16:9, etc.)
 - 2026-01-05: Added author/team section to About page with Person schema for E-E-A-T
 - 2026-01-05: Added testimonials section to homepage (3 user reviews with star ratings)
 - 2026-01-05: Removed GSC verification placeholder meta tags (site already verified)

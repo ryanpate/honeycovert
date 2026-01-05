@@ -59,8 +59,8 @@ ALLOWED_EXTENSIONS = {'heic', 'heif'}
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-def convert_heic_to_image(heic_path, output_path, output_format='png', size_percent=100, quality=90):
-    """Convert HEIC file to specified format with optional resizing
+def convert_heic_to_image(heic_path, output_path, output_format='png', size_percent=100, quality=90, rotate=0, crop_ratio=None):
+    """Convert HEIC file to specified format with optional resizing, rotation, and cropping
 
     Args:
         heic_path: Path to input HEIC file
@@ -68,6 +68,8 @@ def convert_heic_to_image(heic_path, output_path, output_format='png', size_perc
         output_format: Output format ('png', 'jpeg', 'webp')
         size_percent: Percentage to resize (100 = original, 75 = 75%, etc.)
         quality: Quality for JPEG/WebP (1-100, ignored for PNG)
+        rotate: Rotation angle (0, 90, 180, 270)
+        crop_ratio: Crop aspect ratio ('1:1', '4:3', '16:9', '3:2', None for no crop)
     """
     try:
         # Open the HEIC image
@@ -76,6 +78,41 @@ def convert_heic_to_image(heic_path, output_path, output_format='png', size_perc
         # Convert to RGB if necessary (HEIC can be in different color modes)
         if image.mode != 'RGB':
             image = image.convert('RGB')
+
+        # Apply rotation if requested
+        if rotate in [90, 180, 270]:
+            image = image.rotate(-rotate, expand=True)  # Negative for clockwise rotation
+
+        # Apply crop if requested
+        if crop_ratio and crop_ratio != 'none':
+            width, height = image.size
+
+            # Parse aspect ratio
+            ratio_map = {
+                '1:1': (1, 1),
+                '4:3': (4, 3),
+                '3:4': (3, 4),
+                '16:9': (16, 9),
+                '9:16': (9, 16),
+                '3:2': (3, 2),
+                '2:3': (2, 3)
+            }
+
+            if crop_ratio in ratio_map:
+                target_w, target_h = ratio_map[crop_ratio]
+                target_aspect = target_w / target_h
+                current_aspect = width / height
+
+                if current_aspect > target_aspect:
+                    # Image is wider than target, crop width
+                    new_width = int(height * target_aspect)
+                    left = (width - new_width) // 2
+                    image = image.crop((left, 0, left + new_width, height))
+                else:
+                    # Image is taller than target, crop height
+                    new_height = int(width / target_aspect)
+                    top = (height - new_height) // 2
+                    image = image.crop((0, top, width, top + new_height))
 
         # Resize if requested
         if size_percent != 100:
@@ -292,6 +329,17 @@ def convert():
     if quality < 1 or quality > 100:
         quality = 90
 
+    # Get rotation parameter (default 0)
+    rotate = int(request.form.get('rotate', 0))
+    if rotate not in [0, 90, 180, 270]:
+        rotate = 0
+
+    # Get crop ratio parameter (default none)
+    crop_ratio = request.form.get('crop', 'none')
+    valid_crops = ['none', '1:1', '4:3', '3:4', '16:9', '9:16', '3:2', '2:3']
+    if crop_ratio not in valid_crops:
+        crop_ratio = 'none'
+
     # Format-specific settings
     format_extensions = {'png': '.png', 'jpeg': '.jpg', 'webp': '.webp'}
     format_mimetypes = {'png': 'image/png', 'jpeg': 'image/jpeg', 'webp': 'image/webp'}
@@ -316,8 +364,8 @@ def convert():
             output_filename = os.path.splitext(filename)[0] + format_extensions[output_format]
             output_path = os.path.join(batch_folder, output_filename)
 
-            # Convert to requested format
-            if convert_heic_to_image(heic_path, output_path, output_format, size_percent, quality):
+            # Convert to requested format with editing options
+            if convert_heic_to_image(heic_path, output_path, output_format, size_percent, quality, rotate, crop_ratio):
                 converted_files.append({
                     'original': filename,
                     'converted': output_filename,
