@@ -63,15 +63,14 @@ HoneyConvert is a free online HEIC to PNG/JPEG/WebP converter built with Flask a
 - [ ] Submit sitemap to Google Search Console after verification
 - [ ] Request indexing for all 14 pages via URL Inspection Tool
 
-## HIGH PRIORITY - Static Assets (Currently Missing)
-- [ ] Add actual favicon.png (32x32 or 64x64 PNG)
-- [ ] Add apple-touch-icon.png (180x180 PNG)
-- [ ] Add og-image.png (1200x630 PNG) - branded social sharing image
-  - Should include: HoneyConvert logo, tagline, visual of conversion process
+## HIGH PRIORITY - Static Assets
+- [x] Add actual favicon.png (32x32 or 64x64 PNG) - completed 2026-01-05
+- [x] Add apple-touch-icon.png (180x180 PNG) - completed 2026-01-05
+- [x] Add og-image.png (1200x630 PNG) - completed 2026-01-05
 
 ## MEDIUM PRIORITY - Content & Engagement
 - [ ] Add testimonials/social proof to homepage
-- [ ] Create more internal links within content
+- [x] Create more internal links within content (completed 2026-01-05)
 - [ ] Add author/team information to About page for E-E-A-T signals
 - [ ] Consider adding a blog section for fresh content
 
@@ -101,7 +100,9 @@ gunicorn app:app
 ```
 
 ## Recent Changes
+- 2026-01-05: Added contextual internal links to all 9 SEO content pages
 - 2026-01-05: Added site-wide navigation, standardized footer, updated sitemap dates
+- 2026-01-05: Created static assets (favicon.png, apple-touch-icon.png, og-image.png)
 - 2025-12-20: Added 4 new SEO content pages
 - 2025-12-20: Added HEIC Not Opening on Windows troubleshooting page
 - 2025-12-20: Added Google Analytics 4 tracking
