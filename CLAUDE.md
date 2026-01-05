@@ -48,6 +48,7 @@ HoneyConvert is a free online HEIC to PNG/JPEG/WebP converter built with Flask a
 - Schema markup implemented (WebApplication, FAQPage, HowTo, Article, BreadcrumbList)
 - Security headers configured in app.py after_request handler
 - Gzip compression enabled via Flask-Compress
+- PWA enabled with manifest.json, service worker, and offline support
 
 ---
 
@@ -114,6 +115,7 @@ gunicorn app:app
 ```
 
 ## Recent Changes
+- 2026-01-05: Made site a PWA (manifest.json, service worker, offline support, installable)
 - 2026-01-05: Added ads.txt for Google AdSense verification, submitted site for approval
 - 2026-01-05: Added public API with /api/convert endpoint and documentation page at /api
 - 2026-01-05: Added URL-based conversion (convert HEIC from direct URL with /convert-url endpoint)

@@ -203,6 +203,18 @@ def ads_txt():
     return response
 
 
+@app.route('/sw.js')
+def service_worker():
+    """Serve service worker from root for proper scope"""
+    return send_from_directory('static', 'sw.js', mimetype='application/javascript')
+
+
+@app.route('/manifest.json')
+def manifest():
+    """Serve manifest from root"""
+    return send_from_directory('static', 'manifest.json', mimetype='application/manifest+json')
+
+
 @app.route('/robots.txt')
 def robots():
     content = """User-agent: *
