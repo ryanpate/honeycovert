@@ -50,6 +50,23 @@
       ]
     }
     </script>
+
+    <!-- Person Schema for E-E-A-T -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Ryan Pate",
+      "jobTitle": "Founder & Lead Developer",
+      "worksFor": {
+        "@type": "Organization",
+        "name": "HoneyConvert",
+        "url": "https://honeyconvert.com"
+      },
+      "knowsAbout": ["Python", "Flask", "Web Development", "Image Processing", "HEIC Conversion"],
+      "description": "Full-stack developer with over 10 years of experience building web applications."
+    }
+    </script>
     
     <style>
         * {
@@ -236,6 +253,82 @@
             color: #666;
             font-size: 14px;
         }
+
+        /* Team Section */
+        .team-section {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .team-card {
+            background: #f8f9ff;
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid #e8e9ff;
+        }
+
+        .team-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .team-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 24px;
+        }
+
+        .team-info h3 {
+            color: #333;
+            font-size: 18px;
+            margin: 0 0 4px 0;
+        }
+
+        .team-role {
+            color: #667eea;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .team-bio {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .team-expertise {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .expertise-tag {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-weight: 500;
+        }
     </style>
 </head>
 <body>
@@ -290,6 +383,30 @@
             <li>Ability to upload to websites and services that don't support HEIC</li>
             <li>No quality loss during conversion</li>
         </ul>
+
+        <div class="team-section">
+            <h2>👥 Meet the Team</h2>
+            <p>HoneyConvert was created by a small team of developers passionate about making technology accessible to everyone.</p>
+
+            <div class="team-grid">
+                <div class="team-card">
+                    <div class="team-header">
+                        <div class="team-avatar">RP</div>
+                        <div class="team-info">
+                            <h3>Ryan Pate</h3>
+                            <div class="team-role">Founder & Lead Developer</div>
+                        </div>
+                    </div>
+                    <p class="team-bio">Full-stack developer with over 10 years of experience building web applications. Ryan created HoneyConvert after struggling to share iPhone photos with Windows-using colleagues.</p>
+                    <div class="team-expertise">
+                        <span class="expertise-tag">Python</span>
+                        <span class="expertise-tag">Flask</span>
+                        <span class="expertise-tag">Image Processing</span>
+                        <span class="expertise-tag">Web Development</span>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <h2>📧 Get in Touch</h2>
         <p>Have questions, feedback, or suggestions? We'd love to hear from you! Visit our <a href="/contact" style="color: #667eea;">contact page</a> to get in touch.</p>

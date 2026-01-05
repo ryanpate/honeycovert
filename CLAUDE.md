@@ -66,7 +66,7 @@ HoneyConvert is a free online HEIC to PNG/JPEG/WebP converter built with Flask a
 ## MEDIUM PRIORITY - Content & Engagement
 - [x] Add testimonials/social proof to homepage (completed 2026-01-05)
 - [x] Create more internal links within content (completed 2026-01-05)
-- [ ] Add author/team information to About page for E-E-A-T signals
+- [x] Add author/team information to About page for E-E-A-T signals (completed 2026-01-05)
 - [ ] Consider adding a blog section for fresh content
 
 ## MEDIUM PRIORITY - Link Building
@@ -95,6 +95,7 @@ gunicorn app:app
 ```
 
 ## Recent Changes
+- 2026-01-05: Added author/team section to About page with Person schema for E-E-A-T
 - 2026-01-05: Added testimonials section to homepage (3 user reviews with star ratings)
 - 2026-01-05: Removed GSC verification placeholder meta tags (site already verified)
 - 2026-01-05: Added contextual internal links to all 9 SEO content pages
