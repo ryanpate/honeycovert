@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Documentation - HoneyConvert | Free HEIC Conversion API</title>
+    <meta name="description" content="Free API for converting HEIC and HEIF images to PNG, JPEG, or WebP. Simple REST API with support for rotation, cropping, and resizing. No API key required.">
+    <meta name="keywords" content="HEIC API, HEIF conversion API, image conversion API, free API, REST API">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://honeyconvert.com/api">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://honeyconvert.com/api">
+    <meta property="og:title" content="HoneyConvert API - Free HEIC Conversion API">
+    <meta property="og:description" content="Free REST API for converting HEIC images to PNG, JPEG, or WebP.">
+    <meta property="og:site_name" content="HoneyConvert">
+
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5523870768931777"
+         crossorigin="anonymous"></script>
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZCREHPYLHH"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-ZCREHPYLHH');
+    </script>
+
+    <!-- Breadcrumb Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://honeyconvert.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "API Documentation",
+          "item": "https://honeyconvert.com/api"
+        }
+      ]
+    }
+    </script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
+        .site-header { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding: 15px 20px; position: sticky; top: 0; z-index: 1000; }
+        .header-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { color: white; font-size: 24px; font-weight: 700; text-decoration: none; }
+        .nav-links { display: flex; gap: 25px; }
+        .nav-links a { color: white; text-decoration: none; font-size: 15px; font-weight: 500; opacity: 0.9; }
+        .nav-links a:hover { opacity: 1; }
+        .nav-toggle { display: none; background: none; border: none; color: white; font-size: 24px; cursor: pointer; }
+        @media (max-width: 768px) { .nav-links { display: none; position: absolute; top: 100%; left: 0; right: 0; background: rgba(102,126,234,0.98); flex-direction: column; padding: 20px; gap: 15px; } .nav-links.active { display: flex; } .nav-toggle { display: block; } }
+        .main-content { padding: 30px 20px; }
+        .container { max-width: 900px; margin: 0 auto; background: white; border-radius: 20px; padding: 40px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        .site-footer { background: rgba(0,0,0,0.2); padding: 40px 20px 20px; margin-top: 40px; }
+        .footer-content { max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 40px; justify-content: space-between; }
+        .footer-brand { flex: 1; min-width: 200px; }
+        .footer-logo { color: white; font-size: 24px; font-weight: 700; }
+        .footer-tagline { color: rgba(255,255,255,0.7); font-size: 14px; margin-top: 8px; }
+        .footer-links { display: flex; flex-wrap: wrap; gap: 40px; }
+        .footer-column { min-width: 140px; }
+        .footer-column h4 { color: white; font-size: 14px; font-weight: 600; margin-bottom: 15px; text-transform: uppercase; }
+        .footer-column a { display: block; color: rgba(255,255,255,0.8); text-decoration: none; font-size: 14px; margin-bottom: 10px; }
+        .footer-column a:hover { color: white; }
+        .footer-bottom { max-width: 1200px; margin: 30px auto 0; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.2); text-align: center; }
+        .footer-bottom p { color: rgba(255,255,255,0.6); font-size: 13px; }
+        @media (max-width: 768px) { .footer-content, .footer-links { flex-direction: column; gap: 25px; } .footer-brand, .footer-column { text-align: center; } }
+
+        h1 { color: #333; margin-bottom: 10px; font-size: 32px; }
+        .subtitle { color: #666; font-size: 18px; margin-bottom: 30px; }
+        h2 { color: #667eea; margin-top: 35px; margin-bottom: 15px; font-size: 24px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        h3 { color: #333; margin-top: 25px; margin-bottom: 12px; font-size: 18px; }
+        p { color: #555; line-height: 1.8; margin-bottom: 15px; font-size: 16px; }
+
+        .endpoint-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-family: 'Monaco', 'Menlo', monospace;
+        }
+        .method { background: #4CAF50; padding: 4px 10px; border-radius: 4px; font-weight: 700; font-size: 14px; margin-right: 10px; }
+        .endpoint-url { font-size: 18px; }
+
+        .params-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .params-table th, .params-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        .params-table th {
+            background: #f8f9ff;
+            color: #333;
+            font-weight: 600;
+        }
+        .params-table code {
+            background: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        .required { color: #e74c3c; font-weight: 600; }
+        .optional { color: #95a5a6; }
+
+        .code-block {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .code-block .comment { color: #6a9955; }
+        .code-block .string { color: #ce9178; }
+        .code-block .keyword { color: #569cd6; }
+        .code-block .function { color: #dcdcaa; }
+
+        .tab-nav {
+            display: flex;
+            border-bottom: 2px solid #eee;
+            margin-bottom: 0;
+        }
+        .tab-btn {
+            padding: 10px 20px;
+            border: none;
+            background: none;
+            font-size: 14px;
+            font-weight: 600;
+            color: #888;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+        }
+        .tab-btn:hover { color: #667eea; }
+        .tab-btn.active { color: #667eea; border-bottom-color: #667eea; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .response-box {
+            background: #f8f9ff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .response-box h4 {
+            color: #333;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+        .badge-free { background: #d4edda; color: #155724; }
+        .badge-cors { background: #d1ecf1; color: #0c5460; }
+        .badge-nokey { background: #fff3cd; color: #856404; }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: transform 0.3s ease;
+        }
+        .back-link:hover { transform: translateY(-2px); }
+
+        ul { color: #555; line-height: 1.8; margin-left: 25px; margin-bottom: 15px; }
+        li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-content">
+            <a href="/" class="logo">HoneyConvert</a>
+            <button class="nav-toggle" onclick="document.getElementById('navLinks').classList.toggle('active')">&#9776;</button>
+            <nav class="nav-links" id="navLinks">
+                <a href="/">Home</a>
+                <a href="/how-to-convert-heic-to-png">Guides</a>
+                <a href="/what-is-heic">What is HEIC?</a>
+                <a href="/about">About</a>
+                <a href="/contact">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <h1>API Documentation</h1>
+            <p class="subtitle">Convert HEIC images programmatically with our free REST API</p>
+
+            <div style="margin-bottom: 25px;">
+                <span class="badge badge-free">100% Free</span>
+                <span class="badge badge-cors">CORS Enabled</span>
+                <span class="badge badge-nokey">No API Key Required</span>
+            </div>
+
+            <h2>Overview</h2>
+            <p>The HoneyConvert API allows you to convert HEIC and HEIF images to PNG, JPEG, or WebP format programmatically. The API is free to use, requires no authentication, and supports cross-origin requests (CORS).</p>
+
+            <h2>Endpoint</h2>
+            <div class="endpoint-box">
+                <span class="method">POST</span>
+                <span class="endpoint-url">https://honeyconvert.com/api/convert</span>
+            </div>
+
+            <h2>Parameters</h2>
+            <p>Send a <code>multipart/form-data</code> request with the following parameters:</p>
+
+            <table class="params-table">
+                <thead>
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Type</th>
+                        <th>Required</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>file</code></td>
+                        <td>File</td>
+                        <td><span class="required">Required</span></td>
+                        <td>The HEIC or HEIF file to convert (max 100MB)</td>
+                    </tr>
+                    <tr>
+                        <td><code>format</code></td>
+                        <td>String</td>
+                        <td><span class="optional">Optional</span></td>
+                        <td>Output format: <code>png</code>, <code>jpeg</code>, or <code>webp</code>. Default: <code>png</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>size</code></td>
+                        <td>Integer</td>
+                        <td><span class="optional">Optional</span></td>
+                        <td>Size percentage: <code>100</code>, <code>75</code>, <code>50</code>, or <code>25</code>. Default: <code>100</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>quality</code></td>
+                        <td>Integer</td>
+                        <td><span class="optional">Optional</span></td>
+                        <td>JPEG/WebP quality: <code>1-100</code>. Default: <code>90</code>. Ignored for PNG.</td>
+                    </tr>
+                    <tr>
+                        <td><code>rotate</code></td>
+                        <td>Integer</td>
+                        <td><span class="optional">Optional</span></td>
+                        <td>Rotation degrees: <code>0</code>, <code>90</code>, <code>180</code>, or <code>270</code>. Default: <code>0</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>crop</code></td>
+                        <td>String</td>
+                        <td><span class="optional">Optional</span></td>
+                        <td>Aspect ratio: <code>none</code>, <code>1:1</code>, <code>4:3</code>, <code>3:4</code>, <code>16:9</code>, <code>9:16</code>, <code>3:2</code>, <code>2:3</code>. Default: <code>none</code></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Code Examples</h2>
+
+            <div class="tab-nav">
+                <button class="tab-btn active" onclick="showTab('curl')">cURL</button>
+                <button class="tab-btn" onclick="showTab('python')">Python</button>
+                <button class="tab-btn" onclick="showTab('javascript')">JavaScript</button>
+                <button class="tab-btn" onclick="showTab('php')">PHP</button>
+            </div>
+
+            <div id="curl" class="tab-content active">
+                <h3>Basic Conversion</h3>
+                <div class="code-block">
+<span class="comment"># Convert HEIC to PNG</span>
+curl -X POST https://honeyconvert.com/api/convert \
+  -F "file=@photo.heic" \
+  -o converted.png</div>
+
+                <h3>With Options</h3>
+                <div class="code-block">
+<span class="comment"># Convert to JPEG at 75% size with 90-degree rotation</span>
+curl -X POST https://honeyconvert.com/api/convert \
+  -F "file=@photo.heic" \
+  -F "format=jpeg" \
+  -F "size=75" \
+  -F "rotate=90" \
+  -F "quality=85" \
+  -o converted.jpg</div>
+
+                <h3>Square Crop</h3>
+                <div class="code-block">
+<span class="comment"># Convert to square WebP</span>
+curl -X POST https://honeyconvert.com/api/convert \
+  -F "file=@photo.heic" \
+  -F "format=webp" \
+  -F "crop=1:1" \
+  -o square.webp</div>
+            </div>
+
+            <div id="python" class="tab-content">
+                <h3>Using requests</h3>
+                <div class="code-block">
+<span class="keyword">import</span> requests
+
+<span class="comment"># Basic conversion</span>
+<span class="keyword">with</span> <span class="function">open</span>(<span class="string">'photo.heic'</span>, <span class="string">'rb'</span>) <span class="keyword">as</span> f:
+    response = requests.<span class="function">post</span>(
+        <span class="string">'https://honeyconvert.com/api/convert'</span>,
+        files={<span class="string">'file'</span>: f}
+    )
+
+<span class="keyword">with</span> <span class="function">open</span>(<span class="string">'converted.png'</span>, <span class="string">'wb'</span>) <span class="keyword">as</span> f:
+    f.<span class="function">write</span>(response.content)</div>
+
+                <h3>With Options</h3>
+                <div class="code-block">
+<span class="keyword">import</span> requests
+
+<span class="keyword">with</span> <span class="function">open</span>(<span class="string">'photo.heic'</span>, <span class="string">'rb'</span>) <span class="keyword">as</span> f:
+    response = requests.<span class="function">post</span>(
+        <span class="string">'https://honeyconvert.com/api/convert'</span>,
+        files={<span class="string">'file'</span>: f},
+        data={
+            <span class="string">'format'</span>: <span class="string">'jpeg'</span>,
+            <span class="string">'size'</span>: <span class="string">'75'</span>,
+            <span class="string">'rotate'</span>: <span class="string">'90'</span>,
+            <span class="string">'crop'</span>: <span class="string">'1:1'</span>,
+            <span class="string">'quality'</span>: <span class="string">'85'</span>
+        }
+    )
+
+<span class="keyword">if</span> response.status_code == <span class="keyword">200</span>:
+    <span class="keyword">with</span> <span class="function">open</span>(<span class="string">'converted.jpg'</span>, <span class="string">'wb'</span>) <span class="keyword">as</span> f:
+        f.<span class="function">write</span>(response.content)
+<span class="keyword">else</span>:
+    <span class="function">print</span>(<span class="string">'Error:'</span>, response.<span class="function">json</span>())</div>
+            </div>
+
+            <div id="javascript" class="tab-content">
+                <h3>Using fetch (Browser)</h3>
+                <div class="code-block">
+<span class="keyword">const</span> formData = <span class="keyword">new</span> <span class="function">FormData</span>();
+formData.<span class="function">append</span>(<span class="string">'file'</span>, fileInput.files[<span class="keyword">0</span>]);
+formData.<span class="function">append</span>(<span class="string">'format'</span>, <span class="string">'png'</span>);
+
+<span class="keyword">const</span> response = <span class="keyword">await</span> <span class="function">fetch</span>(<span class="string">'https://honeyconvert.com/api/convert'</span>, {
+    method: <span class="string">'POST'</span>,
+    body: formData
+});
+
+<span class="keyword">if</span> (response.ok) {
+    <span class="keyword">const</span> blob = <span class="keyword">await</span> response.<span class="function">blob</span>();
+    <span class="keyword">const</span> url = URL.<span class="function">createObjectURL</span>(blob);
+    <span class="comment">// Use the URL for download or display</span>
+} <span class="keyword">else</span> {
+    <span class="keyword">const</span> error = <span class="keyword">await</span> response.<span class="function">json</span>();
+    console.<span class="function">error</span>(error);
+}</div>
+
+                <h3>Using Node.js (with node-fetch and form-data)</h3>
+                <div class="code-block">
+<span class="keyword">const</span> fs = <span class="function">require</span>(<span class="string">'fs'</span>);
+<span class="keyword">const</span> FormData = <span class="function">require</span>(<span class="string">'form-data'</span>);
+<span class="keyword">const</span> fetch = <span class="function">require</span>(<span class="string">'node-fetch'</span>);
+
+<span class="keyword">const</span> form = <span class="keyword">new</span> <span class="function">FormData</span>();
+form.<span class="function">append</span>(<span class="string">'file'</span>, fs.<span class="function">createReadStream</span>(<span class="string">'photo.heic'</span>));
+form.<span class="function">append</span>(<span class="string">'format'</span>, <span class="string">'jpeg'</span>);
+
+<span class="keyword">const</span> response = <span class="keyword">await</span> <span class="function">fetch</span>(<span class="string">'https://honeyconvert.com/api/convert'</span>, {
+    method: <span class="string">'POST'</span>,
+    body: form
+});
+
+<span class="keyword">const</span> buffer = <span class="keyword">await</span> response.<span class="function">buffer</span>();
+fs.<span class="function">writeFileSync</span>(<span class="string">'converted.jpg'</span>, buffer);</div>
+            </div>
+
+            <div id="php" class="tab-content">
+                <h3>Using cURL</h3>
+                <div class="code-block">
+<span class="keyword">&lt;?php</span>
+<span class="keyword">$ch</span> = <span class="function">curl_init</span>();
+
+<span class="keyword">$data</span> = [
+    <span class="string">'file'</span> => <span class="keyword">new</span> <span class="function">CURLFile</span>(<span class="string">'photo.heic'</span>),
+    <span class="string">'format'</span> => <span class="string">'png'</span>,
+    <span class="string">'size'</span> => <span class="string">'75'</span>
+];
+
+<span class="function">curl_setopt_array</span>(<span class="keyword">$ch</span>, [
+    CURLOPT_URL => <span class="string">'https://honeyconvert.com/api/convert'</span>,
+    CURLOPT_POST => <span class="keyword">true</span>,
+    CURLOPT_POSTFIELDS => <span class="keyword">$data</span>,
+    CURLOPT_RETURNTRANSFER => <span class="keyword">true</span>
+]);
+
+<span class="keyword">$response</span> = <span class="function">curl_exec</span>(<span class="keyword">$ch</span>);
+<span class="keyword">$httpCode</span> = <span class="function">curl_getinfo</span>(<span class="keyword">$ch</span>, CURLINFO_HTTP_CODE);
+<span class="function">curl_close</span>(<span class="keyword">$ch</span>);
+
+<span class="keyword">if</span> (<span class="keyword">$httpCode</span> === <span class="keyword">200</span>) {
+    <span class="function">file_put_contents</span>(<span class="string">'converted.png'</span>, <span class="keyword">$response</span>);
+} <span class="keyword">else</span> {
+    <span class="keyword">$error</span> = <span class="function">json_decode</span>(<span class="keyword">$response</span>, <span class="keyword">true</span>);
+    <span class="function">echo</span> <span class="string">'Error: '</span> . <span class="keyword">$error</span>[<span class="string">'error'</span>];
+}
+<span class="keyword">?&gt;</span></div>
+            </div>
+
+            <h2>Response</h2>
+
+            <h3>Success (200 OK)</h3>
+            <p>On success, the API returns the converted image file directly with appropriate headers:</p>
+            <div class="response-box">
+                <h4>Headers</h4>
+                <ul style="margin-left: 0; list-style: none;">
+                    <li><code>Content-Type: image/png</code> (or jpeg, webp)</li>
+                    <li><code>Content-Disposition: attachment; filename="photo.png"</code></li>
+                    <li><code>X-HoneyConvert-Format: png</code></li>
+                    <li><code>X-HoneyConvert-Size: 100</code></li>
+                </ul>
+            </div>
+
+            <h3>Error Responses</h3>
+            <p>On error, the API returns a JSON response:</p>
+            <div class="code-block">
+{
+    <span class="string">"success"</span>: <span class="keyword">false</span>,
+    <span class="string">"error"</span>: <span class="string">"No file provided"</span>,
+    <span class="string">"code"</span>: <span class="string">"MISSING_FILE"</span>,
+    <span class="string">"documentation"</span>: <span class="string">"https://honeyconvert.com/api"</span>
+}</div>
+
+            <h3>Error Codes</h3>
+            <table class="params-table">
+                <thead>
+                    <tr>
+                        <th>HTTP Status</th>
+                        <th>Code</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>400</td>
+                        <td><code>MISSING_FILE</code></td>
+                        <td>No file was provided in the request</td>
+                    </tr>
+                    <tr>
+                        <td>400</td>
+                        <td><code>EMPTY_FILE</code></td>
+                        <td>The file field was empty</td>
+                    </tr>
+                    <tr>
+                        <td>400</td>
+                        <td><code>INVALID_FILE_TYPE</code></td>
+                        <td>File is not a .heic or .heif file</td>
+                    </tr>
+                    <tr>
+                        <td>500</td>
+                        <td><code>CONVERSION_FAILED</code></td>
+                        <td>The file could not be converted (may be corrupted)</td>
+                    </tr>
+                    <tr>
+                        <td>500</td>
+                        <td><code>SERVER_ERROR</code></td>
+                        <td>An unexpected server error occurred</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Rate Limits</h2>
+            <p>The API is free and does not currently enforce strict rate limits. However, we ask that you:</p>
+            <ul>
+                <li>Keep requests under <strong>100 per minute</strong> per IP address</li>
+                <li>Avoid automated bulk conversions of thousands of files</li>
+                <li>Cache converted images on your end when possible</li>
+            </ul>
+            <p>Excessive usage may result in temporary IP blocking. For high-volume needs, please <a href="/contact" style="color: #667eea;">contact us</a>.</p>
+
+            <h2>CORS Support</h2>
+            <p>The API supports Cross-Origin Resource Sharing (CORS), allowing you to make requests directly from web browsers. All responses include:</p>
+            <div class="code-block">Access-Control-Allow-Origin: *</div>
+
+            <h2>Need Help?</h2>
+            <p>If you have questions or need assistance integrating the API, please <a href="/contact" style="color: #667eea;">contact us</a>. We're happy to help!</p>
+
+            <a href="/" class="back-link">Try the Converter</a>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <span class="footer-logo">HoneyConvert</span>
+                <p class="footer-tagline">Free HEIC to PNG, JPEG, WebP Converter</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>Convert</h4>
+                    <a href="/">HEIC Converter</a>
+                    <a href="/batch-convert-heic">Batch Convert</a>
+                    <a href="/api">API Access</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Learn</h4>
+                    <a href="/what-is-heic">What is HEIC?</a>
+                    <a href="/why-iphone-uses-heic">Why iPhone Uses HEIC</a>
+                    <a href="/heic-vs-png">HEIC vs PNG</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Company</h4>
+                    <a href="/about">About Us</a>
+                    <a href="/contact">Contact</a>
+                    <a href="/privacy">Privacy Policy</a>
+                    <a href="/terms">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 HoneyConvert.com - All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        function showTab(tabId) {
+            // Update buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Update content
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(tabId).classList.add('active');
+        }
+    </script>
+</body>
+</html>

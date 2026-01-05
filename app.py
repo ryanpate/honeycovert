@@ -43,7 +43,7 @@ def add_security_headers(response):
     if request.path.startswith('/static/'):
         # Static assets: cache for 1 year
         response.headers['Cache-Control'] = 'public, max-age=31536000, immutable'
-    elif request.path in ['/', '/about', '/privacy', '/terms', '/contact',
+    elif request.path in ['/', '/about', '/privacy', '/terms', '/contact', '/api',
                           '/what-is-heic', '/heic-vs-png', '/why-iphone-uses-heic',
                           '/how-to-convert-heic-to-png', '/heic-not-opening-windows',
                           '/heic-to-jpeg-vs-png', '/batch-convert-heic',
@@ -299,6 +299,12 @@ def sitemap():
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
+  <url>
+    <loc>https://honeyconvert.com/api</loc>
+    <lastmod>2026-01-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
 </urlset>"""
     response = make_response(content)
     response.headers['Content-Type'] = 'application/xml'
@@ -533,6 +539,152 @@ def convert_url():
             os.rmdir(batch_folder)
         except:
             pass
+
+
+@app.route('/api/convert', methods=['POST', 'OPTIONS'])
+def api_convert():
+    """
+    Public API endpoint for HEIC conversion.
+
+    Accepts multipart/form-data with:
+    - file: HEIC/HEIF file (required)
+    - format: Output format - png, jpeg, webp (default: png)
+    - size: Size percentage - 100, 75, 50, 25 (default: 100)
+    - quality: JPEG/WebP quality 1-100 (default: 90)
+    - rotate: Rotation degrees - 0, 90, 180, 270 (default: 0)
+    - crop: Aspect ratio - none, 1:1, 4:3, 3:4, 16:9, 9:16, 3:2, 2:3 (default: none)
+
+    Returns: Converted image file or JSON error
+    """
+    # Handle CORS preflight
+    if request.method == 'OPTIONS':
+        response = make_response()
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Access-Control-Allow-Methods'] = 'POST, OPTIONS'
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
+        response.headers['Access-Control-Max-Age'] = '86400'
+        return response
+
+    # Check for file
+    if 'file' not in request.files:
+        response = jsonify({
+            'success': False,
+            'error': 'No file provided',
+            'code': 'MISSING_FILE',
+            'documentation': 'https://honeyconvert.com/api'
+        })
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        return response, 400
+
+    file = request.files['file']
+
+    if file.filename == '':
+        response = jsonify({
+            'success': False,
+            'error': 'No file selected',
+            'code': 'EMPTY_FILE',
+            'documentation': 'https://honeyconvert.com/api'
+        })
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        return response, 400
+
+    if not allowed_file(file.filename):
+        response = jsonify({
+            'success': False,
+            'error': 'Invalid file type. Only .heic and .heif files are supported.',
+            'code': 'INVALID_FILE_TYPE',
+            'documentation': 'https://honeyconvert.com/api'
+        })
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        return response, 400
+
+    # Get conversion options
+    output_format = request.form.get('format', 'png').lower()
+    if output_format not in ['png', 'jpeg', 'webp']:
+        output_format = 'png'
+
+    size_percent = int(request.form.get('size', 100))
+    if size_percent not in [100, 75, 50, 25]:
+        size_percent = 100
+
+    quality = int(request.form.get('quality', 90))
+    if quality < 1 or quality > 100:
+        quality = 90
+
+    rotate = int(request.form.get('rotate', 0))
+    if rotate not in [0, 90, 180, 270]:
+        rotate = 0
+
+    crop_ratio = request.form.get('crop', 'none')
+    valid_crops = ['none', '1:1', '4:3', '3:4', '16:9', '9:16', '3:2', '2:3']
+    if crop_ratio not in valid_crops:
+        crop_ratio = 'none'
+
+    # Format settings
+    format_extensions = {'png': '.png', 'jpeg': '.jpg', 'webp': '.webp'}
+    format_mimetypes = {'png': 'image/png', 'jpeg': 'image/jpeg', 'webp': 'image/webp'}
+
+    # Create temporary directory
+    batch_id = os.urandom(16).hex()
+    batch_folder = os.path.join(app.config['UPLOAD_FOLDER'], batch_id)
+    os.makedirs(batch_folder, exist_ok=True)
+
+    try:
+        filename = secure_filename(file.filename)
+        heic_path = os.path.join(batch_folder, filename)
+        file.save(heic_path)
+
+        # Create output filename
+        output_filename = os.path.splitext(filename)[0] + format_extensions[output_format]
+        output_path = os.path.join(batch_folder, output_filename)
+
+        # Convert the image
+        if convert_heic_to_image(heic_path, output_path, output_format, size_percent, quality, rotate, crop_ratio):
+            os.remove(heic_path)
+
+            response = send_file(
+                output_path,
+                as_attachment=True,
+                download_name=output_filename,
+                mimetype=format_mimetypes[output_format]
+            )
+            response.headers['Access-Control-Allow-Origin'] = '*'
+            response.headers['X-HoneyConvert-Format'] = output_format
+            response.headers['X-HoneyConvert-Size'] = str(size_percent)
+            return response
+        else:
+            response = jsonify({
+                'success': False,
+                'error': 'Conversion failed. The file may be corrupted or not a valid HEIC/HEIF image.',
+                'code': 'CONVERSION_FAILED',
+                'documentation': 'https://honeyconvert.com/api'
+            })
+            response.headers['Access-Control-Allow-Origin'] = '*'
+            return response, 500
+
+    except Exception as e:
+        response = jsonify({
+            'success': False,
+            'error': f'Server error: {str(e)}',
+            'code': 'SERVER_ERROR',
+            'documentation': 'https://honeyconvert.com/api'
+        })
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        return response, 500
+    finally:
+        # Cleanup
+        try:
+            for f in os.listdir(batch_folder):
+                os.remove(os.path.join(batch_folder, f))
+            os.rmdir(batch_folder)
+        except:
+            pass
+
+
+@app.route('/api')
+def api_docs():
+    """API documentation page"""
+    return render_template('api.html')
 
 
 @app.route('/cleanup', methods=['POST'])
