@@ -178,43 +178,43 @@ def sitemap():
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://honeyconvert.com/</loc>
-    <lastmod>2025-12-20</lastmod>
+    <lastmod>2026-01-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://honeyconvert.com/about</loc>
-    <lastmod>2025-12-20</lastmod>
+    <lastmod>2026-01-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://honeyconvert.com/what-is-heic</loc>
-    <lastmod>2025-12-20</lastmod>
+    <lastmod>2026-01-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://honeyconvert.com/heic-vs-png</loc>
-    <lastmod>2025-12-20</lastmod>
+    <lastmod>2026-01-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://honeyconvert.com/why-iphone-uses-heic</loc>
-    <lastmod>2025-12-20</lastmod>
+    <lastmod>2026-01-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://honeyconvert.com/how-to-convert-heic-to-png</loc>
-    <lastmod>2025-12-20</lastmod>
+    <lastmod>2026-01-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.95</priority>
   </url>
   <url>
     <loc>https://honeyconvert.com/heic-not-opening-windows</loc>
-    <lastmod>2025-12-20</lastmod>
+    <lastmod>2026-01-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -238,25 +238,25 @@ def sitemap():
   </url>
   <url>
     <loc>https://honeyconvert.com/heic-to-jpeg-vs-png</loc>
-    <lastmod>2025-12-20</lastmod>
+    <lastmod>2026-01-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://honeyconvert.com/batch-convert-heic</loc>
-    <lastmod>2025-12-20</lastmod>
+    <lastmod>2026-01-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://honeyconvert.com/heic-converter-mac</loc>
-    <lastmod>2025-12-20</lastmod>
+    <lastmod>2026-01-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://honeyconvert.com/convert-heic-without-losing-quality</loc>
-    <lastmod>2025-12-20</lastmod>
+    <lastmod>2026-01-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
