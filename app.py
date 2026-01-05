@@ -195,6 +195,14 @@ def heic_converter_mac():
 def convert_heic_without_losing_quality():
     return render_template('convert-heic-without-losing-quality.html')
 
+@app.route('/ads.txt')
+def ads_txt():
+    content = "google.com, pub-5523870768931777, DIRECT, f08c47fec0942fa0\n"
+    response = make_response(content)
+    response.headers['Content-Type'] = 'text/plain'
+    return response
+
+
 @app.route('/robots.txt')
 def robots():
     content = """User-agent: *
