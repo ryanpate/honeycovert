@@ -5,6 +5,8 @@ from PIL import Image
 from pillow_heif import register_heif_opener
 import io
 import zipfile
+import requests
+from urllib.parse import urlparse
 from werkzeug.utils import secure_filename
 
 # Register HEIF opener with Pillow
@@ -417,6 +419,121 @@ def convert():
         download_name='converted_images.zip',
         mimetype='application/zip'
     )
+
+@app.route('/convert-url', methods=['POST'])
+def convert_url():
+    """Convert HEIC image from URL"""
+    data = request.get_json()
+
+    if not data or 'url' not in data:
+        return jsonify({'error': 'No URL provided'}), 400
+
+    url = data.get('url', '').strip()
+
+    # Validate URL
+    if not url:
+        return jsonify({'error': 'Empty URL'}), 400
+
+    try:
+        parsed = urlparse(url)
+        if not parsed.scheme in ['http', 'https']:
+            return jsonify({'error': 'Invalid URL scheme. Use http or https.'}), 400
+    except Exception:
+        return jsonify({'error': 'Invalid URL format'}), 400
+
+    # Check file extension
+    url_path = parsed.path.lower()
+    if not (url_path.endswith('.heic') or url_path.endswith('.heif')):
+        return jsonify({'error': 'URL must point to a .heic or .heif file'}), 400
+
+    # Get conversion options
+    output_format = data.get('format', 'png').lower()
+    if output_format not in ['png', 'jpeg', 'webp']:
+        output_format = 'png'
+
+    size_percent = int(data.get('size', 100))
+    if size_percent not in [100, 75, 50, 25]:
+        size_percent = 100
+
+    quality = int(data.get('quality', 90))
+    if quality < 1 or quality > 100:
+        quality = 90
+
+    rotate = int(data.get('rotate', 0))
+    if rotate not in [0, 90, 180, 270]:
+        rotate = 0
+
+    crop_ratio = data.get('crop', 'none')
+    valid_crops = ['none', '1:1', '4:3', '3:4', '16:9', '9:16', '3:2', '2:3']
+    if crop_ratio not in valid_crops:
+        crop_ratio = 'none'
+
+    # Format settings
+    format_extensions = {'png': '.png', 'jpeg': '.jpg', 'webp': '.webp'}
+    format_mimetypes = {'png': 'image/png', 'jpeg': 'image/jpeg', 'webp': 'image/webp'}
+
+    # Create temporary directory
+    batch_id = os.urandom(16).hex()
+    batch_folder = os.path.join(app.config['UPLOAD_FOLDER'], batch_id)
+    os.makedirs(batch_folder, exist_ok=True)
+
+    try:
+        # Download the file with timeout and size limit
+        headers = {'User-Agent': 'HoneyConvert/1.0'}
+        response = requests.get(url, headers=headers, timeout=30, stream=True)
+        response.raise_for_status()
+
+        # Check content length (limit to 50MB)
+        content_length = response.headers.get('content-length')
+        if content_length and int(content_length) > 50 * 1024 * 1024:
+            return jsonify({'error': 'File too large (max 50MB)'}), 400
+
+        # Extract filename from URL
+        filename = os.path.basename(parsed.path)
+        if not filename:
+            filename = 'image.heic'
+        filename = secure_filename(filename)
+
+        # Save downloaded file
+        heic_path = os.path.join(batch_folder, filename)
+        with open(heic_path, 'wb') as f:
+            for chunk in response.iter_content(chunk_size=8192):
+                f.write(chunk)
+
+        # Create output filename
+        output_filename = os.path.splitext(filename)[0] + format_extensions[output_format]
+        output_path = os.path.join(batch_folder, output_filename)
+
+        # Convert the image
+        if convert_heic_to_image(heic_path, output_path, output_format, size_percent, quality, rotate, crop_ratio):
+            # Remove original file
+            os.remove(heic_path)
+
+            # Send the converted file
+            return send_file(
+                output_path,
+                as_attachment=True,
+                download_name=output_filename,
+                mimetype=format_mimetypes[output_format]
+            )
+        else:
+            return jsonify({'error': 'Conversion failed'}), 500
+
+    except requests.exceptions.Timeout:
+        return jsonify({'error': 'Request timed out. The URL took too long to respond.'}), 408
+    except requests.exceptions.RequestException as e:
+        return jsonify({'error': f'Failed to download file: {str(e)}'}), 400
+    except Exception as e:
+        return jsonify({'error': f'Conversion error: {str(e)}'}), 500
+    finally:
+        # Cleanup
+        try:
+            for f in os.listdir(batch_folder):
+                os.remove(os.path.join(batch_folder, f))
+            os.rmdir(batch_folder)
+        except:
+            pass
+
 
 @app.route('/cleanup', methods=['POST'])
 def cleanup():

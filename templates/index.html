@@ -578,6 +578,80 @@
             }
         }
 
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            border-bottom: 2px solid #eee;
+            margin-bottom: 25px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            background: none;
+            font-size: 15px;
+            font-weight: 600;
+            color: #888;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+        }
+
+        .tab-btn:hover {
+            color: #667eea;
+        }
+
+        .tab-btn.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* URL Input Styles */
+        .url-input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .url-input {
+            flex: 1;
+            padding: 14px 16px;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .url-input:focus {
+            outline: none;
+            border-color: #764ba2;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .url-input::placeholder {
+            color: #aaa;
+        }
+
+        .url-hint {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 20px;
+            padding: 12px;
+            background: #f8f9ff;
+            border-radius: 8px;
+            border-left: 3px solid #667eea;
+        }
+
         /* Site Footer */
         .site-footer {
             width: 100%;
@@ -884,19 +958,37 @@
         </section>
 
         <div class="container">
-            <h2 class="converter-title">Upload Your HEIC Files</h2>
-            <p class="subtitle">Drag & drop or click to select files</p>
+            <h2 class="converter-title">Convert Your HEIC Files</h2>
 
-        <div class="upload-area" id="uploadArea">
-            <div class="upload-icon">📤</div>
-            <div class="upload-text">Click to select files or drag & drop</div>
-            <div class="upload-hint">Supports .HEIC and .HEIF files</div>
-        </div>
+            <!-- Tab Navigation -->
+            <div class="tab-nav">
+                <button class="tab-btn active" onclick="switchTab('upload')">Upload Files</button>
+                <button class="tab-btn" onclick="switchTab('url')">From URL</button>
+            </div>
 
-        <input type="file" id="fileInput" multiple accept=".heic,.heif">
+            <!-- Upload Tab -->
+            <div id="uploadTab" class="tab-content active">
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">📤</div>
+                    <div class="upload-text">Click to select files or drag & drop</div>
+                    <div class="upload-hint">Supports .HEIC and .HEIF files</div>
+                </div>
 
-        <div id="fileList" class="file-list"></div>
-        <div id="fileCount" class="file-count"></div>
+                <input type="file" id="fileInput" multiple accept=".heic,.heif">
+
+                <div id="fileList" class="file-list"></div>
+                <div id="fileCount" class="file-count"></div>
+            </div>
+
+            <!-- URL Tab -->
+            <div id="urlTab" class="tab-content">
+                <div class="url-hint">
+                    Enter a direct URL to a HEIC or HEIF image file. The URL must end in .heic or .heif
+                </div>
+                <div class="url-input-group">
+                    <input type="url" id="urlInput" class="url-input" placeholder="https://example.com/photo.heic">
+                </div>
+            </div>
 
         <div class="options-row">
             <div class="option-group">
@@ -1081,6 +1173,39 @@
         const formatHint = document.getElementById('formatHint');
 
         let selectedFiles = [];
+        let currentTab = 'upload';
+
+        // Tab switching functionality
+        function switchTab(tab) {
+            currentTab = tab;
+
+            // Update tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Update tab content
+            document.getElementById('uploadTab').classList.remove('active');
+            document.getElementById('urlTab').classList.remove('active');
+            document.getElementById(tab + 'Tab').classList.add('active');
+
+            // Update convert button state
+            updateConvertButton();
+        }
+
+        // Update convert button based on current tab and input
+        function updateConvertButton() {
+            if (currentTab === 'upload') {
+                convertBtn.disabled = selectedFiles.length === 0;
+            } else {
+                const urlInput = document.getElementById('urlInput');
+                convertBtn.disabled = !urlInput.value.trim();
+            }
+        }
+
+        // URL input listener
+        document.getElementById('urlInput').addEventListener('input', updateConvertButton);
 
         // Format hints
         const formatHints = {
@@ -1188,6 +1313,14 @@
         }
 
         convertBtn.addEventListener('click', async () => {
+            if (currentTab === 'upload') {
+                await handleFileConversion();
+            } else {
+                await handleUrlConversion();
+            }
+        });
+
+        async function handleFileConversion() {
             if (selectedFiles.length === 0) return;
 
             const formData = new FormData();
@@ -1247,7 +1380,7 @@
                 document.body.removeChild(a);
 
                 showStatus('✅ Conversion complete! Download started.', 'success');
-                
+
                 // Clear the file list after successful conversion
                 setTimeout(() => {
                     selectedFiles = [];
@@ -1262,7 +1395,95 @@
                 loader.style.display = 'none';
                 convertBtn.disabled = false;
             }
-        });
+        }
+
+        async function handleUrlConversion() {
+            const urlInput = document.getElementById('urlInput');
+            const imageUrl = urlInput.value.trim();
+
+            if (!imageUrl) return;
+
+            // Validate URL format
+            try {
+                new URL(imageUrl);
+            } catch {
+                showStatus('❌ Please enter a valid URL', 'error');
+                return;
+            }
+
+            // Check file extension
+            const lowerUrl = imageUrl.toLowerCase();
+            if (!lowerUrl.includes('.heic') && !lowerUrl.includes('.heif')) {
+                showStatus('❌ URL must point to a .heic or .heif file', 'error');
+                return;
+            }
+
+            const sizeSelect = document.getElementById('sizeSelect');
+            const rotateSelect = document.getElementById('rotateSelect');
+            const cropSelect = document.getElementById('cropSelect');
+
+            const formatName = formatSelect.value.toUpperCase();
+            convertBtn.disabled = true;
+            loader.style.display = 'block';
+            showStatus(`Downloading and converting to ${formatName}...`, 'info');
+
+            try {
+                const response = await fetch('/convert-url', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        url: imageUrl,
+                        format: formatSelect.value,
+                        size: parseInt(sizeSelect.value),
+                        rotate: parseInt(rotateSelect.value),
+                        crop: cropSelect.value
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Conversion failed');
+                }
+
+                // Get the filename from the Content-Disposition header
+                const contentDisposition = response.headers.get('Content-Disposition');
+                let filename = `converted.${formatSelect.value}`;
+                if (contentDisposition) {
+                    const matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(contentDisposition);
+                    if (matches != null && matches[1]) {
+                        filename = matches[1].replace(/['"]/g, '');
+                    }
+                }
+
+                // Download the file
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+
+                showStatus('✅ Conversion complete! Download started.', 'success');
+
+                // Clear the URL input after successful conversion
+                setTimeout(() => {
+                    urlInput.value = '';
+                    updateConvertButton();
+                }, 2000);
+
+            } catch (error) {
+                showStatus(`❌ ${error.message}`, 'error');
+                console.error('Error:', error);
+            } finally {
+                loader.style.display = 'none';
+                convertBtn.disabled = false;
+            }
+        }
 
         function showStatus(message, type) {
             statusMessage.textContent = message;
