@@ -54,13 +54,8 @@ HoneyConvert is a free online HEIC to PNG/JPEG/WebP converter built with Flask a
 # TODO: Critical Items for SEO & AdSense Approval
 
 ## HIGH PRIORITY - Google Search Console
-- [ ] Replace `YOUR_VERIFICATION_CODE` with actual GSC verification code in:
-  - templates/index.html (line 20)
-  - templates/about.html (line 13)
-  - templates/contact.html
-  - templates/privacy.html
-  - templates/terms.html
-- [ ] Submit sitemap to Google Search Console after verification
+- [x] GSC verification complete (site already verified, removed placeholder meta tags 2026-01-05)
+- [ ] Submit sitemap to Google Search Console
 - [ ] Request indexing for all 14 pages via URL Inspection Tool
 
 ## HIGH PRIORITY - Static Assets
@@ -100,6 +95,7 @@ gunicorn app:app
 ```
 
 ## Recent Changes
+- 2026-01-05: Removed GSC verification placeholder meta tags (site already verified)
 - 2026-01-05: Added contextual internal links to all 9 SEO content pages
 - 2026-01-05: Added site-wide navigation, standardized footer, updated sitemap dates
 - 2026-01-05: Created static assets (favicon.png, apple-touch-icon.png, og-image.png)
