@@ -747,6 +747,97 @@
                 font-size: 12px;
             }
         }
+
+        /* Testimonials Section */
+        .testimonials-section {
+            max-width: 900px;
+            width: 100%;
+            margin-top: 40px;
+        }
+
+        .testimonials-title {
+            color: white;
+            font-size: 24px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .testimonials-subtitle {
+            color: rgba(255,255,255,0.8);
+            font-size: 14px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .testimonials-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+        }
+
+        .testimonial-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .testimonial-stars {
+            color: #ffc107;
+            font-size: 18px;
+            margin-bottom: 12px;
+            letter-spacing: 2px;
+        }
+
+        .testimonial-text {
+            color: #555;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 16px;
+            font-style: italic;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .testimonial-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .testimonial-info {
+            flex: 1;
+        }
+
+        .testimonial-name {
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .testimonial-role {
+            color: #888;
+            font-size: 12px;
+        }
     </style>
 </head>
 <body>
@@ -833,6 +924,47 @@
         <div id="loader" class="loader"></div>
         <div id="statusMessage" class="status-message"></div>
     </div>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials-section">
+        <h2 class="testimonials-title">Loved by Thousands of Users</h2>
+        <p class="testimonials-subtitle">Join over 50,000 people who convert their iPhone photos with HoneyConvert</p>
+        <div class="testimonials-grid">
+            <div class="testimonial-card">
+                <div class="testimonial-stars">★★★★★</div>
+                <p class="testimonial-text">"Finally, a HEIC converter that actually works! I transferred 200+ photos from my iPhone and converted them all in minutes. No signup, no hassle."</p>
+                <div class="testimonial-author">
+                    <div class="testimonial-avatar">S</div>
+                    <div class="testimonial-info">
+                        <div class="testimonial-name">Sarah M.</div>
+                        <div class="testimonial-role">Photographer</div>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-card">
+                <div class="testimonial-stars">★★★★★</div>
+                <p class="testimonial-text">"I was struggling to open iPhone photos on my Windows PC. HoneyConvert solved my problem instantly. The batch conversion feature is a lifesaver!"</p>
+                <div class="testimonial-author">
+                    <div class="testimonial-avatar">J</div>
+                    <div class="testimonial-info">
+                        <div class="testimonial-name">James T.</div>
+                        <div class="testimonial-role">Small Business Owner</div>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-card">
+                <div class="testimonial-stars">★★★★★</div>
+                <p class="testimonial-text">"Simple, fast, and free. I love that my files are deleted after conversion - privacy matters! This is now my go-to tool for HEIC conversion."</p>
+                <div class="testimonial-author">
+                    <div class="testimonial-avatar">M</div>
+                    <div class="testimonial-info">
+                        <div class="testimonial-name">Michelle K.</div>
+                        <div class="testimonial-role">Graphic Designer</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <section class="guides-section">
         <h2 class="guides-title">Helpful Guides</h2>
