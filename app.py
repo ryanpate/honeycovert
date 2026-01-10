@@ -47,7 +47,8 @@ def add_security_headers(response):
                           '/what-is-heic', '/heic-vs-png', '/why-iphone-uses-heic',
                           '/how-to-convert-heic-to-png', '/heic-not-opening-windows',
                           '/heic-to-jpeg-vs-png', '/batch-convert-heic',
-                          '/heic-converter-mac', '/convert-heic-without-losing-quality']:
+                          '/heic-converter-mac', '/convert-heic-without-losing-quality',
+                          '/heic-to-png-converter']:
         # HTML pages: cache for 1 hour, revalidate
         response.headers['Cache-Control'] = 'public, max-age=3600, must-revalidate'
     elif request.path in ['/robots.txt', '/sitemap.xml']:
@@ -195,6 +196,10 @@ def heic_converter_mac():
 def convert_heic_without_losing_quality():
     return render_template('convert-heic-without-losing-quality.html')
 
+@app.route('/heic-to-png-converter')
+def heic_to_png_converter():
+    return render_template('heic-to-png-converter.html')
+
 @app.route('/ads.txt')
 def ads_txt():
     content = "google.com, pub-5523870768931777, DIRECT, f08c47fec0942fa0\n"
@@ -324,6 +329,12 @@ def sitemap():
     <lastmod>2026-01-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://honeyconvert.com/heic-to-png-converter</loc>
+    <lastmod>2026-01-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
   </url>
 </urlset>"""
     response = make_response(content)
