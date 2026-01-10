@@ -31,7 +31,7 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 @app.after_request
 def add_security_headers(response):
-    """Add security and cache headers to all responses"""
+    """Add security, cache, and canonical headers to all responses"""
     # Security headers
     response.headers['X-Content-Type-Options'] = 'nosniff'
     response.headers['X-Frame-Options'] = 'SAMEORIGIN'
@@ -39,16 +39,36 @@ def add_security_headers(response):
     response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
     response.headers['Permissions-Policy'] = 'geolocation=(), microphone=(), camera=()'
 
+    # Canonical URL mapping for SEO (prevents keyword cannibalization)
+    canonical_urls = {
+        '/': 'https://honeyconvert.com/',
+        '/about': 'https://honeyconvert.com/about',
+        '/privacy': 'https://honeyconvert.com/privacy',
+        '/terms': 'https://honeyconvert.com/terms',
+        '/contact': 'https://honeyconvert.com/contact',
+        '/api': 'https://honeyconvert.com/api',
+        '/what-is-heic': 'https://honeyconvert.com/what-is-heic',
+        '/heic-vs-png': 'https://honeyconvert.com/heic-vs-png',
+        '/why-iphone-uses-heic': 'https://honeyconvert.com/why-iphone-uses-heic',
+        '/how-to-convert-heic-to-png': 'https://honeyconvert.com/how-to-convert-heic-to-png',
+        '/heic-not-opening-windows': 'https://honeyconvert.com/heic-not-opening-windows',
+        '/heic-to-jpeg-vs-png': 'https://honeyconvert.com/heic-to-jpeg-vs-png',
+        '/batch-convert-heic': 'https://honeyconvert.com/batch-convert-heic',
+        '/heic-converter-mac': 'https://honeyconvert.com/heic-converter-mac',
+        '/convert-heic-without-losing-quality': 'https://honeyconvert.com/convert-heic-without-losing-quality',
+        '/heic-to-png-converter': 'https://honeyconvert.com/heic-to-png-converter',
+        '/heic-to-jpg-converter': 'https://honeyconvert.com/heic-to-jpg-converter',
+    }
+
+    # Add canonical Link header for HTML pages
+    if request.path in canonical_urls:
+        response.headers['Link'] = f'<{canonical_urls[request.path]}>; rel="canonical"'
+
     # Cache headers based on content type
     if request.path.startswith('/static/'):
         # Static assets: cache for 1 year
         response.headers['Cache-Control'] = 'public, max-age=31536000, immutable'
-    elif request.path in ['/', '/about', '/privacy', '/terms', '/contact', '/api',
-                          '/what-is-heic', '/heic-vs-png', '/why-iphone-uses-heic',
-                          '/how-to-convert-heic-to-png', '/heic-not-opening-windows',
-                          '/heic-to-jpeg-vs-png', '/batch-convert-heic',
-                          '/heic-converter-mac', '/convert-heic-without-losing-quality',
-                          '/heic-to-png-converter', '/heic-to-jpg-converter']:
+    elif request.path in canonical_urls:
         # HTML pages: cache for 1 hour, revalidate
         response.headers['Cache-Control'] = 'public, max-age=3600, must-revalidate'
     elif request.path in ['/robots.txt', '/sitemap.xml']:
