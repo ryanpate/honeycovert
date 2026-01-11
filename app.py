@@ -58,6 +58,7 @@ def add_security_headers(response):
         '/convert-heic-without-losing-quality': 'https://honeyconvert.com/convert-heic-without-losing-quality',
         '/heic-to-png-converter': 'https://honeyconvert.com/heic-to-png-converter',
         '/heic-to-jpg-converter': 'https://honeyconvert.com/heic-to-jpg-converter',
+        '/heic-to-webp-converter': 'https://honeyconvert.com/heic-to-webp-converter',
     }
 
     # Add canonical Link header for HTML pages
@@ -224,6 +225,10 @@ def heic_to_png_converter():
 def heic_to_jpg_converter():
     return render_template('heic-to-jpg-converter.html')
 
+@app.route('/heic-to-webp-converter')
+def heic_to_webp_converter():
+    return render_template('heic-to-webp-converter.html')
+
 @app.route('/ads.txt')
 def ads_txt():
     content = "google.com, pub-5523870768931777, DIRECT, f08c47fec0942fa0\n"
@@ -294,6 +299,12 @@ def sitemap():
     <loc>https://honeyconvert.com/batch-convert-heic</loc>
     <lastmod>2026-01-10</lastmod>
     <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://honeyconvert.com/heic-to-webp-converter</loc>
+    <lastmod>2026-01-10</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
