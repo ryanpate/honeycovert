@@ -14,13 +14,14 @@ HoneyConvert is a free online HEIC to PNG/JPEG/WebP converter built with Flask a
 ```
 /honeyconvert
 ├── app.py                 # Main Flask application
-├── templates/             # HTML templates (15 pages)
+├── templates/             # HTML templates (18 pages)
 │   ├── index.html         # Homepage with converter tool
 │   ├── about.html         # About page
 │   ├── contact.html       # Contact page
 │   ├── privacy.html       # Privacy policy
 │   ├── terms.html         # Terms of service
-│   └── [9 SEO content pages]
+│   ├── api.html           # API documentation
+│   └── [12 SEO content pages]
 ├── static/                # Static assets (favicon, images)
 ├── requirements.txt       # Python dependencies
 └── CLAUDE.md              # This file
@@ -33,15 +34,22 @@ HoneyConvert is a free online HEIC to PNG/JPEG/WebP converter built with Flask a
 - Robots: /robots.txt (dynamic, lines 159-173)
 
 ## SEO Content Pages
-1. /what-is-heic - Educational content about HEIC format
-2. /heic-vs-png - Format comparison
-3. /why-iphone-uses-heic - Apple's reasoning
-4. /how-to-convert-heic-to-png - Step-by-step guide
-5. /heic-not-opening-windows - Troubleshooting
-6. /heic-to-jpeg-vs-png - Output format comparison
-7. /batch-convert-heic - Batch conversion guide
-8. /heic-converter-mac - Mac-specific guide
-9. /convert-heic-without-losing-quality - Quality preservation
+
+### Converter Landing Pages
+1. /heic-to-png-converter - HEIC to PNG converter tool
+2. /heic-to-jpg-converter - HEIC to JPEG converter tool
+3. /heic-to-webp-converter - HEIC to WebP converter tool
+
+### Educational & Guide Pages
+4. /what-is-heic - Educational content about HEIC format
+5. /heic-vs-png - Format comparison
+6. /why-iphone-uses-heic - Apple's reasoning
+7. /how-to-convert-heic-to-png - Step-by-step guide
+8. /heic-not-opening-windows - Troubleshooting
+9. /heic-to-jpeg-vs-png - Output format comparison
+10. /batch-convert-heic - Batch conversion guide
+11. /heic-converter-mac - Mac-specific guide
+12. /convert-heic-without-losing-quality - Quality preservation
 
 ## Important Notes
 - All templates include Google AdSense and GA4 tracking
@@ -87,10 +95,47 @@ The site meets Google AdSense requirements:
 
 ---
 
+# Bing Webmaster Status
+
+**Status:** Verification file deployed (2026-01-12)
+- [x] BingSiteAuth.xml added to root directory
+- [ ] Site verification pending in Bing Webmaster Tools
+- [ ] Submit sitemap.xml to Bing
+
+---
+
 # Open TODO Items
 
 ## Google Search Console (Manual Tasks)
-- [ ] Request indexing for all 15 pages via URL Inspection Tool
+
+### URLs to Request Indexing
+Copy these URLs to Google Search Console → URL Inspection → Request Indexing:
+
+**Core Pages:**
+- [ ] https://honeyconvert.com/
+- [ ] https://honeyconvert.com/about
+- [ ] https://honeyconvert.com/contact
+- [ ] https://honeyconvert.com/privacy
+- [ ] https://honeyconvert.com/terms
+- [ ] https://honeyconvert.com/api
+
+**Converter Landing Pages:**
+- [ ] https://honeyconvert.com/heic-to-png-converter
+- [ ] https://honeyconvert.com/heic-to-jpg-converter
+- [ ] https://honeyconvert.com/heic-to-webp-converter
+
+**Educational & Guide Pages:**
+- [ ] https://honeyconvert.com/what-is-heic
+- [ ] https://honeyconvert.com/heic-vs-png
+- [ ] https://honeyconvert.com/why-iphone-uses-heic
+- [ ] https://honeyconvert.com/how-to-convert-heic-to-png
+- [ ] https://honeyconvert.com/heic-not-opening-windows
+- [ ] https://honeyconvert.com/heic-to-jpeg-vs-png
+- [ ] https://honeyconvert.com/batch-convert-heic
+- [ ] https://honeyconvert.com/heic-converter-mac
+- [ ] https://honeyconvert.com/convert-heic-without-losing-quality
+
+**Total: 18 URLs**
 
 ## Link Building & Marketing
 - [ ] Submit to Product Hunt
@@ -115,6 +160,11 @@ gunicorn app:app
 ```
 
 ## Recent Changes
+- 2026-01-12: Added BingSiteAuth.xml for Bing Webmaster verification
+- 2026-01-10: SEO audit - internal linking improvements across 6 content pages
+- 2026-01-10: SEO audit - meta descriptions optimized (5 pages, all now 145+ chars)
+- 2026-01-10: SEO audit - added HEIC to WebP converter landing page
+- 2026-01-10: SEO audit - sitemap priorities reorganized (proper 0.3-1.0 hierarchy)
 - 2026-01-05: Made site a PWA (manifest.json, service worker, offline support, installable)
 - 2026-01-05: Added ads.txt for Google AdSense verification, submitted site for approval
 - 2026-01-05: Added public API with /api/convert endpoint and documentation page at /api
