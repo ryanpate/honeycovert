@@ -237,6 +237,17 @@ def ads_txt():
     return response
 
 
+@app.route('/BingSiteAuth.xml')
+def bing_site_auth():
+    content = """<?xml version="1.0"?>
+<users>
+	<user>29ACAC7E27CA9CB577CE5708757F488A</user>
+</users>"""
+    response = make_response(content)
+    response.headers['Content-Type'] = 'application/xml'
+    return response
+
+
 @app.route('/sw.js')
 def service_worker():
     """Serve service worker from root for proper scope"""
