@@ -160,6 +160,10 @@ gunicorn app:app
 ```
 
 ## Recent Changes
+- 2026-01-13: SEO optimization for /heic-vs-png (8 impressions, position 57.12):
+  - Title: "HEIC vs PNG: Which is Better? Complete Comparison (2026)"
+  - Expanded FAQs from 4 to 8 targeting "difference between heic and png", "is png or heic better"
+  - Added 4 new FAQ schema entries for rich snippets
 - 2026-01-13: SEO optimization for /batch-convert-heic (10 impressions, position 62.6):
   - Title: "Batch Convert HEIC to JPG/PNG Free Online (2026)"
   - Expanded FAQs from 6 to 11 targeting "batch convert heic to jpg", "heic batch converter"
