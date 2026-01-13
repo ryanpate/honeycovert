@@ -160,6 +160,10 @@ gunicorn app:app
 ```
 
 ## Recent Changes
+- 2026-01-13: SEO optimization for 3 quick-win pages based on GSC data (positions 12-41):
+  - /convert-heic-without-losing-quality: Title with 2026, expanded FAQs (4→7), optimized meta
+  - /heic-converter-mac: Added macOS Sonoma/Sequoia, expanded FAQs (5→10), quick answer section
+  - /heic-not-opening-windows: Windows 11 24H2 support, expanded FAQs (6→10), refreshed schema
 - 2026-01-12: Added BingSiteAuth.xml for Bing Webmaster verification
 - 2026-01-10: SEO audit - internal linking improvements across 6 content pages
 - 2026-01-10: SEO audit - meta descriptions optimized (5 pages, all now 145+ chars)
