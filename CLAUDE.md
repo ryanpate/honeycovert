@@ -160,6 +160,10 @@ gunicorn app:app
 ```
 
 ## Recent Changes
+- 2026-01-13: SEO optimization for /what-is-heic (161 impressions, position 86):
+  - Title optimized for "heic meaning", "heic definition", ".heic files"
+  - Expanded FAQs from 4 to 10 targeting exact GSC queries
+  - Added 6 new FAQ schema entries for rich snippet potential
 - 2026-01-13: SEO optimization for 3 quick-win pages based on GSC data (positions 12-41):
   - /convert-heic-without-losing-quality: Title with 2026, expanded FAQs (4→7), optimized meta
   - /heic-converter-mac: Added macOS Sonoma/Sequoia, expanded FAQs (5→10), quick answer section
