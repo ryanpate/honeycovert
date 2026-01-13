@@ -160,6 +160,10 @@ gunicorn app:app
 ```
 
 ## Recent Changes
+- 2026-01-13: SEO optimization for /why-iphone-uses-heic:
+  - Title: "Why Does iPhone Use HEIC? (And How to Change It) 2026 Guide"
+  - Expanded FAQs from 5 to 10 targeting "why are my iphone photos heic", "stop iphone heic"
+  - Added 7 new FAQ schema entries for rich snippets
 - 2026-01-13: SEO optimization for /heic-vs-png (8 impressions, position 57.12):
   - Title: "HEIC vs PNG: Which is Better? Complete Comparison (2026)"
   - Expanded FAQs from 4 to 8 targeting "difference between heic and png", "is png or heic better"
