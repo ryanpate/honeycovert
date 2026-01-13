@@ -160,6 +160,10 @@ gunicorn app:app
 ```
 
 ## Recent Changes
+- 2026-01-13: SEO optimization for /batch-convert-heic (10 impressions, position 62.6):
+  - Title: "Batch Convert HEIC to JPG/PNG Free Online (2026)"
+  - Expanded FAQs from 6 to 11 targeting "batch convert heic to jpg", "heic batch converter"
+  - Added Mac and Windows specific batch conversion FAQs
 - 2026-01-13: SEO optimization for /what-is-heic (161 impressions, position 86):
   - Title optimized for "heic meaning", "heic definition", ".heic files"
   - Expanded FAQs from 4 to 10 targeting exact GSC queries
