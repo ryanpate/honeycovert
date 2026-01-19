@@ -14,14 +14,14 @@ HoneyConvert is a free online HEIC to PNG/JPEG/WebP converter built with Flask a
 ```
 /honeyconvert
 ├── app.py                 # Main Flask application
-├── templates/             # HTML templates (20 pages)
+├── templates/             # HTML templates (21 pages)
 │   ├── index.html         # Homepage with converter tool
 │   ├── about.html         # About page
 │   ├── contact.html       # Contact page
 │   ├── privacy.html       # Privacy policy
 │   ├── terms.html         # Terms of service
 │   ├── api.html           # API documentation
-│   └── [14 SEO content pages]
+│   └── [15 SEO content pages]
 ├── static/                # Static assets (favicon, images)
 ├── requirements.txt       # Python dependencies
 └── CLAUDE.md              # This file
@@ -51,7 +51,8 @@ HoneyConvert is a free online HEIC to PNG/JPEG/WebP converter built with Flask a
 11. /heic-converter-mac - Mac-specific guide
 12. /convert-heic-without-losing-quality - Quality preservation
 13. /heic-vs-jpeg - HEIC vs JPEG comparison
-14. /is-heic-lossless - HEIC compression explained (NEW)
+14. /is-heic-lossless - HEIC compression explained
+15. /open-heic-file - How to open HEIC files guide (NEW)
 
 ## Important Notes
 - All templates include Google AdSense and GA4 tracking
@@ -162,6 +163,10 @@ gunicorn app:app
 ```
 
 ## Recent Changes
+- 2026-01-19: Created new /open-heic-file page targeting "open heic file", "how to open heic" queries
+  - Step-by-step guides for Windows, Mac, and online methods
+  - HowTo schema with 4 steps for rich results
+  - FAQ schema with 8 questions
 - 2026-01-19: Created new /is-heic-lossless page targeting "is heic lossless" keyword (position 34.67)
   - Technical explanation of HEIC compression (lossy vs lossless)
   - Comparison image added (heic-comparison.png)

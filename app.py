@@ -61,6 +61,7 @@ def add_security_headers(response):
         '/heic-to-png-converter': 'https://honeyconvert.com/heic-to-png-converter',
         '/heic-to-jpg-converter': 'https://honeyconvert.com/heic-to-jpg-converter',
         '/heic-to-webp-converter': 'https://honeyconvert.com/heic-to-webp-converter',
+        '/open-heic-file': 'https://honeyconvert.com/open-heic-file',
     }
 
     # Add canonical Link header for HTML pages
@@ -198,6 +199,10 @@ def heic_vs_jpeg():
 @app.route('/is-heic-lossless')
 def is_heic_lossless():
     return render_template('is-heic-lossless.html')
+
+@app.route('/open-heic-file')
+def open_heic_file():
+    return render_template('open-heic-file.html')
 
 @app.route('/why-iphone-uses-heic')
 def why_iphone_uses_heic():
@@ -372,6 +377,12 @@ def sitemap():
   </url>
   <url>
     <loc>https://honeyconvert.com/is-heic-lossless</loc>
+    <lastmod>2026-01-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://honeyconvert.com/open-heic-file</loc>
     <lastmod>2026-01-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
