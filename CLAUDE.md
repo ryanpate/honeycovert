@@ -163,6 +163,12 @@ gunicorn app:app
 ```
 
 ## Recent Changes
+- 2026-01-19: Internal linking hub model implemented across all content pages
+  - Added links to 3 new pages (/heic-vs-jpeg, /is-heic-lossless, /open-heic-file) on 9 existing pages
+  - Updated related links sections on: heic-vs-png, why-iphone-uses-heic, how-to-convert-heic-to-png, heic-to-jpeg-vs-png, batch-convert-heic, heic-converter-mac, convert-heic-without-losing-quality, heic-vs-jpeg
+- 2026-01-19: FAQ expansions targeting GSC queries
+  - /what-is-heic: Added 3 FAQs (12 total) - "Why can't I open HEIC photos?", "How do I convert HEIC to JPG?", "Are HEIC files safe?"
+  - /heic-not-opening-windows: Added 3 FAQs (13 total) - "Is there a free HEIC codec?", "How do I permanently fix HEIC not opening?", "Why can't Windows open HEIC by default?"
 - 2026-01-19: Created new /open-heic-file page targeting "open heic file", "how to open heic" queries
   - Step-by-step guides for Windows, Mac, and online methods
   - HowTo schema with 4 steps for rich results
