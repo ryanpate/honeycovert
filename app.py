@@ -49,6 +49,7 @@ def add_security_headers(response):
         '/api': 'https://honeyconvert.com/api',
         '/what-is-heic': 'https://honeyconvert.com/what-is-heic',
         '/heic-vs-png': 'https://honeyconvert.com/heic-vs-png',
+        '/heic-vs-jpeg': 'https://honeyconvert.com/heic-vs-jpeg',
         '/why-iphone-uses-heic': 'https://honeyconvert.com/why-iphone-uses-heic',
         '/how-to-convert-heic-to-png': 'https://honeyconvert.com/how-to-convert-heic-to-png',
         '/heic-not-opening-windows': 'https://honeyconvert.com/heic-not-opening-windows',
@@ -188,6 +189,10 @@ def what_is_heic():
 @app.route('/heic-vs-png')
 def heic_vs_png():
     return render_template('heic-vs-png.html')
+
+@app.route('/heic-vs-jpeg')
+def heic_vs_jpeg():
+    return render_template('heic-vs-jpeg.html')
 
 @app.route('/why-iphone-uses-heic')
 def why_iphone_uses_heic():
@@ -350,6 +355,12 @@ def sitemap():
   </url>
   <url>
     <loc>https://honeyconvert.com/heic-vs-png</loc>
+    <lastmod>2026-01-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://honeyconvert.com/heic-vs-jpeg</loc>
     <lastmod>2026-01-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>

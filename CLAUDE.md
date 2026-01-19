@@ -50,6 +50,7 @@ HoneyConvert is a free online HEIC to PNG/JPEG/WebP converter built with Flask a
 10. /batch-convert-heic - Batch conversion guide
 11. /heic-converter-mac - Mac-specific guide
 12. /convert-heic-without-losing-quality - Quality preservation
+13. /heic-vs-jpeg - HEIC vs JPEG comparison (NEW)
 
 ## Important Notes
 - All templates include Google AdSense and GA4 tracking
@@ -160,6 +161,10 @@ gunicorn app:app
 ```
 
 ## Recent Changes
+- 2026-01-19: Created new /heic-vs-jpeg page targeting high-volume "heic vs jpeg" keyword (5K+ monthly searches)
+  - Comprehensive comparison with FAQ schema (8 questions)
+  - Quick Answer box for featured snippets
+  - Full route and sitemap integration
 - 2026-01-19: SEO Battle Plan Phase 1 Implementation:
   - **Title Tags**: Updated all 8 content pages with CTR-optimized titles using brackets
   - **Meta Descriptions**: Updated top 4 pages with action-oriented descriptions
