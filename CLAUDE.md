@@ -160,6 +160,20 @@ gunicorn app:app
 ```
 
 ## Recent Changes
+- 2026-01-19: SEO Battle Plan Phase 1 Implementation:
+  - **Title Tags**: Updated all 8 content pages with CTR-optimized titles using brackets
+  - **Meta Descriptions**: Updated top 4 pages with action-oriented descriptions
+  - **Quick Answer Boxes**: Added to top 4 pages for featured snippet potential
+  - **Enhanced Robots Meta**: Added max-image-preview:large to all 12 content pages
+  - **Copyright Fixes**: Updated 2025→2026 in heic-not-opening-windows and convert-heic-without-losing-quality
+  - **BreadcrumbList Schema**: Added to convert-heic-without-losing-quality
+  - **Sitemap Priorities**: Updated based on GSC data:
+    - /what-is-heic: 0.7→0.9 (highest impressions)
+    - /heic-vs-png: 0.7→0.85 (near Page 1)
+    - /convert-heic-without-losing-quality: 0.8→0.85 (near Page 1)
+    - /heic-not-opening-windows: 0.8→0.85 (good position)
+  - **Converter CTAs**: Added to all 9 content pages before FAQ sections
+  - **dateModified**: Updated schema dates on modified pages
 - 2026-01-13: SEO optimization for /why-iphone-uses-heic:
   - Title: "Why Does iPhone Use HEIC? (And How to Change It) 2026 Guide"
   - Expanded FAQs from 5 to 10 targeting "why are my iphone photos heic", "stop iphone heic"

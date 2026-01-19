@@ -326,9 +326,9 @@ def sitemap():
   </url>
   <url>
     <loc>https://honeyconvert.com/heic-not-opening-windows</loc>
-    <lastmod>2026-01-10</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.85</priority>
   </url>
   <url>
     <loc>https://honeyconvert.com/heic-converter-mac</loc>
@@ -338,21 +338,21 @@ def sitemap():
   </url>
   <url>
     <loc>https://honeyconvert.com/convert-heic-without-losing-quality</loc>
-    <lastmod>2026-01-10</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.85</priority>
   </url>
   <url>
     <loc>https://honeyconvert.com/what-is-heic</loc>
-    <lastmod>2026-01-10</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.9</priority>
   </url>
   <url>
     <loc>https://honeyconvert.com/heic-vs-png</loc>
-    <lastmod>2026-01-10</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.85</priority>
   </url>
   <url>
     <loc>https://honeyconvert.com/why-iphone-uses-heic</loc>
