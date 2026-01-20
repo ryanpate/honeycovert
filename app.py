@@ -54,13 +54,9 @@ def add_security_headers(response):
         '/why-iphone-uses-heic': 'https://honeyconvert.com/why-iphone-uses-heic',
         '/how-to-convert-heic-to-png': 'https://honeyconvert.com/how-to-convert-heic-to-png',
         '/heic-not-opening-windows': 'https://honeyconvert.com/heic-not-opening-windows',
-        '/heic-to-jpeg-vs-png': 'https://honeyconvert.com/heic-to-jpeg-vs-png',
         '/batch-convert-heic': 'https://honeyconvert.com/batch-convert-heic',
         '/heic-converter-mac': 'https://honeyconvert.com/heic-converter-mac',
         '/convert-heic-without-losing-quality': 'https://honeyconvert.com/convert-heic-without-losing-quality',
-        '/heic-to-png-converter': 'https://honeyconvert.com/heic-to-png-converter',
-        '/heic-to-jpg-converter': 'https://honeyconvert.com/heic-to-jpg-converter',
-        '/heic-to-webp-converter': 'https://honeyconvert.com/heic-to-webp-converter',
         '/open-heic-file': 'https://honeyconvert.com/open-heic-file',
     }
 
@@ -216,9 +212,6 @@ def how_to_convert_heic_to_png():
 def heic_not_opening_windows():
     return render_template('heic-not-opening-windows.html')
 
-@app.route('/heic-to-jpeg-vs-png')
-def heic_to_jpeg_vs_png():
-    return render_template('heic-to-jpeg-vs-png.html')
 
 @app.route('/batch-convert-heic')
 def batch_convert_heic():
@@ -232,17 +225,6 @@ def heic_converter_mac():
 def convert_heic_without_losing_quality():
     return render_template('convert-heic-without-losing-quality.html')
 
-@app.route('/heic-to-png-converter')
-def heic_to_png_converter():
-    return render_template('heic-to-png-converter.html')
-
-@app.route('/heic-to-jpg-converter')
-def heic_to_jpg_converter():
-    return render_template('heic-to-jpg-converter.html')
-
-@app.route('/heic-to-webp-converter')
-def heic_to_webp_converter():
-    return render_template('heic-to-webp-converter.html')
 
 @app.route('/ads.txt')
 def ads_txt():
@@ -310,27 +292,9 @@ def sitemap():
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://honeyconvert.com/heic-to-png-converter</loc>
-    <lastmod>2026-01-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://honeyconvert.com/heic-to-jpg-converter</loc>
-    <lastmod>2026-01-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
     <loc>https://honeyconvert.com/batch-convert-heic</loc>
     <lastmod>2026-01-10</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://honeyconvert.com/heic-to-webp-converter</loc>
-    <lastmod>2026-01-10</lastmod>
-    <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
@@ -389,12 +353,6 @@ def sitemap():
   </url>
   <url>
     <loc>https://honeyconvert.com/why-iphone-uses-heic</loc>
-    <lastmod>2026-01-10</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://honeyconvert.com/heic-to-jpeg-vs-png</loc>
     <lastmod>2026-01-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
