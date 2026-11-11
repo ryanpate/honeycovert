@@ -1350,7 +1350,14 @@
                 });
 
                 if (!response.ok) {
-                    throw new Error('Conversion failed');
+                    let message = 'Conversion failed. Please try again.';
+                    if (response.status === 413) {
+                        message = 'Upload too large (max 100MB total). Try fewer files.';
+                    } else {
+                        const errorData = await response.json().catch(() => null);
+                        if (errorData && errorData.error) message = errorData.error;
+                    }
+                    throw new Error(message);
                 }
 
                 // Get the filename from the Content-Disposition header or use a default
@@ -1384,7 +1391,7 @@
                 }, 2000);
 
             } catch (error) {
-                showStatus('❌ Conversion failed. Please try again.', 'error');
+                showStatus(`❌ ${error instanceof TypeError ? 'Conversion failed. Please try again.' : error.message}`, 'error');
                 console.error('Error:', error);
             } finally {
                 loader.style.display = 'none';

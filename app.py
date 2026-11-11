@@ -1,12 +1,15 @@
-from flask import Flask, render_template, request, send_file, jsonify, send_from_directory, make_response
+from flask import Flask, render_template, request, send_file, jsonify, send_from_directory, make_response, after_this_request
 from flask_compress import Compress
 import os
 from PIL import Image
-from pillow_heif import register_heif_opener
-import io
+from pillow_heif import register_heif_opener, open_heif
+import ipaddress
+import shutil
+import socket
+import threading
 import zipfile
 import requests
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urljoin
 from werkzeug.utils import secure_filename
 
 # Register HEIF opener with Pillow
@@ -79,8 +82,46 @@ def add_security_headers(response):
 
 ALLOWED_EXTENSIONS = {'heic', 'heif'}
 
+# A decoded photo takes hundreds of MB, so only one conversion runs at a time.
+# Other requests wait their turn; this caps peak memory at a single image.
+conversion_lock = threading.Lock()
+
+# Decoding needs roughly 12 MB per megapixel. 50 MP covers 48 MP iPhone photos
+# and keeps a single conversion within a 1 GB server.
+MAX_PIXELS = 50_000_000
+
+class ImageTooLarge(Exception):
+    pass
+
+@app.errorhandler(ImageTooLarge)
+def image_too_large(e):
+    response = jsonify({
+        'success': False,
+        'error': f'Image too large to convert (max {MAX_PIXELS // 1_000_000} megapixels)',
+        'code': 'IMAGE_TOO_LARGE'
+    })
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    return response, 400
+
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def to_int(value, default):
+    """Parse a request parameter as an int, falling back to default"""
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return default
+
+def is_public_host(hostname):
+    """True only if hostname resolves exclusively to public internet addresses"""
+    if not hostname:
+        return False
+    try:
+        infos = socket.getaddrinfo(hostname, None)
+        return all(ipaddress.ip_address(info[4][0]).is_global for info in infos)
+    except (socket.gaierror, UnicodeError, ValueError):
+        return False
 
 def convert_heic_to_image(heic_path, output_path, output_format='png', size_percent=100, quality=90, rotate=0, crop_ratio=None):
     """Convert HEIC file to specified format with optional resizing, rotation, and cropping
@@ -94,9 +135,16 @@ def convert_heic_to_image(heic_path, output_path, output_format='png', size_perc
         rotate: Rotation angle (0, 90, 180, 270)
         crop_ratio: Crop aspect ratio ('1:1', '4:3', '16:9', '3:2', None for no crop)
     """
+    conversion_lock.acquire()
     try:
         # Open the HEIC image
         image = Image.open(heic_path)
+        if image.width * image.height > MAX_PIXELS:
+            raise ImageTooLarge()
+        if image.format == 'HEIF':
+            # Images from Image.open are read-only for HEIF, which makes save()
+            # copy the whole image in memory. Decoding directly avoids that copy.
+            image = open_heif(heic_path).to_pillow()
 
         # Convert to RGB if necessary (HEIC can be in different color modes)
         if image.mode != 'RGB':
@@ -147,18 +195,22 @@ def convert_heic_to_image(heic_path, output_path, output_format='png', size_perc
 
         # Save in requested format
         if output_format == 'png':
-            image.save(output_path, 'PNG', optimize=True)
+            image.save(output_path, 'PNG')
         elif output_format == 'jpeg':
             image.save(output_path, 'JPEG', quality=quality, optimize=True)
         elif output_format == 'webp':
             image.save(output_path, 'WEBP', quality=quality, optimize=True)
         else:
-            image.save(output_path, 'PNG', optimize=True)
+            image.save(output_path, 'PNG')
 
         return True
+    except ImageTooLarge:
+        raise
     except Exception as e:
         print(f"Error converting {heic_path}: {str(e)}")
         return False
+    finally:
+        conversion_lock.release()
 
 @app.route('/')
 def index():
@@ -403,7 +455,7 @@ def convert():
         return jsonify({'error': 'No files selected'}), 400
 
     # Get size parameter from form data (default to 100 = original size)
-    size_percent = int(request.form.get('size', 100))
+    size_percent = to_int(request.form.get('size'), 100)
 
     # Validate size parameter
     if size_percent not in [100, 75, 50, 25]:
@@ -415,12 +467,12 @@ def convert():
         output_format = 'png'
 
     # Get quality parameter for JPEG/WebP (default 90)
-    quality = int(request.form.get('quality', 90))
+    quality = to_int(request.form.get('quality'), 90)
     if quality < 1 or quality > 100:
         quality = 90
 
     # Get rotation parameter (default 0)
-    rotate = int(request.form.get('rotate', 0))
+    rotate = to_int(request.form.get('rotate'), 0)
     if rotate not in [0, 90, 180, 270]:
         rotate = 0
 
@@ -441,6 +493,11 @@ def convert():
     batch_id = os.urandom(16).hex()
     batch_folder = os.path.join(app.config['UPLOAD_FOLDER'], batch_id)
     os.makedirs(batch_folder, exist_ok=True)
+
+    @after_this_request
+    def remove_batch_folder(response):
+        shutil.rmtree(batch_folder, ignore_errors=True)
+        return response
 
     for file in files:
         if file and allowed_file(file.filename):
@@ -485,24 +542,16 @@ def convert():
             mimetype=format_mimetypes[output_format]
         )
 
-    # If multiple files, create a ZIP archive
-    zip_buffer = io.BytesIO()
-    with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+    # If multiple files, create a ZIP archive on disk (not in memory).
+    # Images are already compressed, so store them without recompressing.
+    zip_path = os.path.join(batch_folder, 'converted_images.zip')
+    with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_STORED) as zip_file:
         for file_info in converted_files:
             zip_file.write(file_info['path'], file_info['converted'])
-
-    zip_buffer.seek(0)
-
-    # Clean up temporary files
-    for file_info in converted_files:
-        if os.path.exists(file_info['path']):
             os.remove(file_info['path'])
 
-    if os.path.exists(batch_folder):
-        os.rmdir(batch_folder)
-
     return send_file(
-        zip_buffer,
+        zip_path,
         as_attachment=True,
         download_name='converted_images.zip',
         mimetype='application/zip'
@@ -539,15 +588,15 @@ def convert_url():
     if output_format not in ['png', 'jpeg', 'webp']:
         output_format = 'png'
 
-    size_percent = int(data.get('size', 100))
+    size_percent = to_int(data.get('size'), 100)
     if size_percent not in [100, 75, 50, 25]:
         size_percent = 100
 
-    quality = int(data.get('quality', 90))
+    quality = to_int(data.get('quality'), 90)
     if quality < 1 or quality > 100:
         quality = 90
 
-    rotate = int(data.get('rotate', 0))
+    rotate = to_int(data.get('rotate'), 0)
     if rotate not in [0, 90, 180, 270]:
         rotate = 0
 
@@ -568,12 +617,23 @@ def convert_url():
     try:
         # Download the file with timeout and size limit
         headers = {'User-Agent': 'HoneyConvert/1.0'}
-        response = requests.get(url, headers=headers, timeout=30, stream=True)
+        max_bytes = 50 * 1024 * 1024
+
+        # Follow redirects manually so every hop is checked against internal addresses
+        for _ in range(4):
+            hop = urlparse(url)
+            if hop.scheme not in ['http', 'https'] or not is_public_host(hop.hostname):
+                return jsonify({'error': 'URL must point to a public web address'}), 400
+            response = requests.get(url, headers=headers, timeout=30, stream=True, allow_redirects=False)
+            if not response.is_redirect:
+                break
+            url = urljoin(url, response.headers.get('location', ''))
+        else:
+            return jsonify({'error': 'Too many redirects'}), 400
         response.raise_for_status()
 
         # Check content length (limit to 50MB)
-        content_length = response.headers.get('content-length')
-        if content_length and int(content_length) > 50 * 1024 * 1024:
+        if to_int(response.headers.get('content-length'), 0) > max_bytes:
             return jsonify({'error': 'File too large (max 50MB)'}), 400
 
         # Extract filename from URL
@@ -584,8 +644,12 @@ def convert_url():
 
         # Save downloaded file
         heic_path = os.path.join(batch_folder, filename)
+        downloaded = 0
         with open(heic_path, 'wb') as f:
             for chunk in response.iter_content(chunk_size=8192):
+                downloaded += len(chunk)
+                if downloaded > max_bytes:
+                    return jsonify({'error': 'File too large (max 50MB)'}), 400
                 f.write(chunk)
 
         # Create output filename
@@ -607,6 +671,8 @@ def convert_url():
         else:
             return jsonify({'error': 'Conversion failed'}), 500
 
+    except ImageTooLarge:
+        raise
     except requests.exceptions.Timeout:
         return jsonify({'error': 'Request timed out. The URL took too long to respond.'}), 408
     except requests.exceptions.RequestException as e:
@@ -685,15 +751,15 @@ def api_convert():
     if output_format not in ['png', 'jpeg', 'webp']:
         output_format = 'png'
 
-    size_percent = int(request.form.get('size', 100))
+    size_percent = to_int(request.form.get('size'), 100)
     if size_percent not in [100, 75, 50, 25]:
         size_percent = 100
 
-    quality = int(request.form.get('quality', 90))
+    quality = to_int(request.form.get('quality'), 90)
     if quality < 1 or quality > 100:
         quality = 90
 
-    rotate = int(request.form.get('rotate', 0))
+    rotate = to_int(request.form.get('rotate'), 0)
     if rotate not in [0, 90, 180, 270]:
         rotate = 0
 
@@ -744,6 +810,8 @@ def api_convert():
             response.headers['Access-Control-Allow-Origin'] = '*'
             return response, 500
 
+    except ImageTooLarge:
+        raise
     except Exception as e:
         response = jsonify({
             'success': False,
@@ -768,21 +836,6 @@ def api_docs():
     """API documentation page"""
     return render_template('api.html')
 
-
-@app.route('/cleanup', methods=['POST'])
-def cleanup():
-    """Clean up temporary files"""
-    try:
-        # This can be called to clean up old temporary files
-        for folder in os.listdir(app.config['UPLOAD_FOLDER']):
-            folder_path = os.path.join(app.config['UPLOAD_FOLDER'], folder)
-            if os.path.isdir(folder_path):
-                for file in os.listdir(folder_path):
-                    os.remove(os.path.join(folder_path, file))
-                os.rmdir(folder_path)
-        return jsonify({'status': 'success'})
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     # For local development only
