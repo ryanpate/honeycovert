@@ -137,90 +137,108 @@
     </script>
 
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --cream: #fbf3df; --card: #fffaf0; --well: #f6ead0;
+            --honey: #f7b733; --honey-pale: #fde6a6; --honey-deep: #8f5600;
+            --ink: #3a2a10; --muted: #75603c;
+            --tint: 150, 95, 10;
+            --clay-raised: inset 4px 4px 10px rgba(255, 255, 255, 0.9), inset -6px -6px 14px rgba(var(--tint), 0.10), 0 22px 40px -18px rgba(var(--tint), 0.45);
+            --clay-button: inset 4px 4px 8px rgba(255, 255, 255, 0.55), inset -5px -5px 10px rgba(160, 90, 0, 0.28), 0 12px 20px -10px rgba(190, 120, 0, 0.6);
+            --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+            --ease-in: cubic-bezier(0.55, 0, 1, 0.45);
+            --dur-fast: 120ms; --dur-menu: 200ms; --dur-exit: 160ms;
         }
-
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: 0.01ms !important; animation-delay: 0s !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; transition-delay: 0s !important; }
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: ui-rounded, "SF Pro Rounded", "Nunito", system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            color: var(--ink);
+            background: radial-gradient(900px 420px at 50% -80px, #ffd67a 0%, var(--honey-pale) 45%, rgba(253, 230, 166, 0) 75%), var(--cream);
+            background-repeat: no-repeat;
             min-height: 100vh;
-            
         }
-
+        /* Fine grain over the whole page */
+        body::before {
+            content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.35  0 0 0 0 0.22  0 0 0 0 0.02  0 0 0 0.55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+            mix-blend-mode: multiply; opacity: 0.22;
+        }
+        a, button { font-family: inherit; }
+        :focus-visible { outline: 3px solid var(--honey-deep); outline-offset: 2px; }
         /* Site Header & Footer */
-        .site-header { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding: 15px 20px; position: sticky; top: 0; z-index: 1000; }
-        .header-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
-        .logo { color: white; font-size: 24px; font-weight: 700; text-decoration: none; }
-        .nav-links { display: flex; gap: 25px; }
-        .nav-links a { color: white; text-decoration: none; font-size: 15px; opacity: 0.9; }
-        .nav-links a:hover { opacity: 1; }
-        .nav-toggle { display: none; background: none; border: none; color: white; font-size: 24px; cursor: pointer; }
-        @media (max-width: 768px) { .nav-links { display: none; position: absolute; top: 100%; left: 0; right: 0; background: rgba(102,126,234,0.98); flex-direction: column; padding: 20px; gap: 15px; } .nav-links.active { display: flex; } .nav-toggle { display: block; } }
-        .main-content { padding: 30px 20px; }
-        .site-footer { background: rgba(0,0,0,0.2); padding: 40px 20px 20px; margin-top: 40px; }
+        .site-header { background: rgba(251, 243, 223, 0.86); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); padding: 10px 20px; position: sticky; top: 0; z-index: 1000; }
+        .header-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; position: relative; }
+        .logo { color: var(--ink); font-size: 22px; font-weight: 800; text-decoration: none; display: flex; align-items: center; gap: 10px; min-height: 44px; }
+        .logo-mark { width: 26px; height: 29px; background: var(--honey); clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%); box-shadow: inset 3px 3px 5px rgba(255, 255, 255, 0.6), inset -4px -4px 6px rgba(160, 90, 0, 0.35); }
+        .nav-links { display: flex; gap: 6px; align-items: center; }
+        .nav-links a { color: var(--ink); text-decoration: none; font-size: 15px; font-weight: 600; padding: 10px 14px; border-radius: 16px; transition: background-color var(--dur-fast) var(--ease-out); }
+        .nav-links a:hover { background: rgba(var(--tint), 0.12); }
+        .nav-toggle { display: none; width: 44px; height: 44px; background: var(--card); border: none; border-radius: 16px; box-shadow: var(--clay-raised); color: var(--ink); font-size: 22px; cursor: pointer; transition: transform var(--dur-fast) var(--ease-out); }
+        .nav-toggle:active { transform: scale(0.97); }
+        @media (max-width: 768px) {
+            .nav-toggle { display: block; }
+            .nav-links { position: absolute; top: calc(100% + 8px); right: 0; min-width: 210px; flex-direction: column; align-items: stretch; gap: 2px; padding: 10px; background: var(--card); border-radius: 24px; box-shadow: var(--clay-raised); transform-origin: top right; opacity: 0; transform: scale(0.95); visibility: hidden; transition: opacity var(--dur-exit) var(--ease-in), transform var(--dur-exit) var(--ease-in), visibility 0s linear var(--dur-exit); }
+            .nav-links.active { opacity: 1; transform: scale(1); visibility: visible; transition: opacity var(--dur-menu) var(--ease-out), transform var(--dur-menu) var(--ease-out), visibility 0s; }
+            .nav-links a { padding: 12px 14px; }
+        }
+        .main-content { padding: 18px 20px 30px; }
+        .site-footer { background: var(--ink); border-radius: 40px 40px 0 0; padding: 50px 20px 20px; margin-top: 40px; }
         .footer-content { max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 40px; justify-content: space-between; }
         .footer-brand { flex: 1; min-width: 200px; }
-        .footer-logo { color: white; font-size: 24px; font-weight: 700; }
-        .footer-tagline { color: rgba(255,255,255,0.7); font-size: 14px; margin-top: 8px; }
+        .footer-logo { color: var(--honey); font-size: 24px; font-weight: 800; }
+        .footer-tagline { color: rgba(251, 243, 223, 0.75); font-size: 14px; margin-top: 8px; margin-bottom: 0; }
         .footer-links { display: flex; flex-wrap: wrap; gap: 40px; }
         .footer-column { min-width: 140px; }
-        .footer-column h4 { color: white; font-size: 14px; font-weight: 600; margin-bottom: 15px; text-transform: uppercase; }
-        .footer-column a { display: block; color: rgba(255,255,255,0.8); text-decoration: none; font-size: 14px; margin-bottom: 10px; }
-        .footer-column a:hover { color: white; }
-        .footer-bottom { max-width: 1200px; margin: 30px auto 0; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.2); text-align: center; }
-        .footer-bottom p { color: rgba(255,255,255,0.6); font-size: 13px; }
+        .footer-column h4 { color: var(--cream); font-size: 14px; font-weight: 700; margin: 0 0 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .footer-column a { display: block; color: rgba(251, 243, 223, 0.8); text-decoration: none; font-size: 14px; padding: 6px 0; transition: color var(--dur-fast) var(--ease-out); }
+        .footer-column a:hover { color: var(--honey); }
+        .footer-bottom { max-width: 1200px; margin: 40px auto 0; padding-top: 20px; border-top: 1px solid rgba(251, 243, 223, 0.2); text-align: center; }
+        .footer-bottom p { color: rgba(251, 243, 223, 0.65); font-size: 13px; margin: 0; }
         @media (max-width: 768px) { .footer-content, .footer-links { flex-direction: column; gap: 25px; } .footer-brand, .footer-column { text-align: center; } }
-
         /* Breadcrumb Navigation */
-        .breadcrumb { max-width: 800px; margin: 0 auto; padding: 15px 20px 0; }
-        .breadcrumb-list { display: flex; flex-wrap: wrap; list-style: none; margin: 0; padding: 0; font-size: 14px; }
-        .breadcrumb-list li { display: flex; align-items: center; }
-        .breadcrumb-list li:not(:last-child)::after { content: "›"; margin: 0 10px; color: rgba(255,255,255,0.6); }
-        .breadcrumb-list a { color: rgba(255,255,255,0.9); text-decoration: none; transition: color 0.2s; }
-        .breadcrumb-list a:hover { color: white; text-decoration: underline; }
-        .breadcrumb-list .current { color: rgba(255,255,255,0.7); }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-        }
-
+        .breadcrumb { max-width: 800px; margin: 0 auto; padding: 14px 20px 0; }
+        .breadcrumb-list { display: flex; flex-wrap: wrap; list-style: none; margin: 0; padding: 0; font-size: 14px; font-weight: 600; color: var(--muted); }
+        .breadcrumb-list li { display: flex; align-items: center; margin: 0; }
+        .breadcrumb-list li:not(:last-child)::after { content: "›"; margin: 0 10px; color: var(--muted); }
+        .breadcrumb-list a { color: var(--honey-deep); text-decoration: none; }
+        .breadcrumb-list a:hover { text-decoration: underline; }
+        .breadcrumb-list .current { color: var(--muted); }
+        .container { max-width: 800px; margin: 0 auto; background: var(--card); border-radius: 36px; padding: 40px; box-shadow: var(--clay-raised); }
+        @media (max-width: 600px) { .main-content { padding: 14px 14px 24px; } .container { padding: 24px 18px; border-radius: 28px; } }
+        .back-link { display: inline-block; margin-top: 30px; padding: 14px 24px; background: var(--honey); color: var(--ink); text-decoration: none; border-radius: 18px; font-weight: 800; box-shadow: var(--clay-button); transition: transform var(--dur-fast) var(--ease-out); }
+        .back-link:hover { transform: translateY(-2px); }
+        .back-link:active { transform: scale(0.97); }
         h1 {
-            color: #333;
+            color: var(--ink);
             margin-bottom: 20px;
             font-size: 32px;
         }
 
         h2 {
-            color: #667eea;
+            color: var(--honey-deep);
             margin-top: 30px;
             margin-bottom: 15px;
             font-size: 24px;
         }
 
         h3 {
-            color: #444;
+            color: var(--ink);
             margin-top: 20px;
             margin-bottom: 10px;
             font-size: 20px;
         }
 
         p {
-            color: #555;
+            color: var(--muted);
             line-height: 1.8;
             margin-bottom: 15px;
             font-size: 16px;
         }
 
         ul, ol {
-            color: #555;
+            color: var(--muted);
             line-height: 1.8;
             margin-left: 30px;
             margin-bottom: 15px;
@@ -236,11 +254,11 @@
             margin: 25px 0;
             border-radius: 10px;
             overflow: hidden;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 10px rgba(var(--tint), 0.1);
         }
 
         .comparison-table th {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--ink);
             color: white;
             padding: 15px;
             text-align: left;
@@ -249,11 +267,11 @@
 
         .comparison-table td {
             padding: 15px;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid rgba(var(--tint), 0.2);
         }
 
         .comparison-table tr:nth-child(even) {
-            background: #f8f9ff;
+            background: var(--well);
         }
 
         .comparison-table tr:last-child td {
@@ -261,13 +279,13 @@
         }
 
         .winner {
-            color: #27ae60;
+            color: #1b7040;
             font-weight: 600;
         }
 
         .highlight-box {
-            background: #f8f9ff;
-            border-left: 4px solid #667eea;
+            background: var(--well);
+            border-left: 4px solid var(--honey);
             padding: 20px;
             margin: 20px 0;
             border-radius: 0 10px 10px 0;
@@ -287,8 +305,7 @@
         @media (max-width: 600px) {
             .pros-cons {
                 grid-template-columns: 1fr;
-            }
-        }
+            }}
 
         .pros, .cons {
             padding: 20px;
@@ -297,21 +314,21 @@
 
         .pros {
             background: #e8f5e9;
-            border: 2px solid #27ae60;
+            border: 2px solid #1b7040;
         }
 
         .cons {
             background: #ffebee;
-            border: 2px solid #e74c3c;
+            border: 2px solid #b3261e;
         }
 
         .pros h4 {
-            color: #27ae60;
+            color: #1b7040;
             margin-bottom: 10px;
         }
 
         .cons h4 {
-            color: #e74c3c;
+            color: #b3261e;
             margin-bottom: 10px;
         }
 
@@ -321,7 +338,7 @@
         }
 
         .cta-box {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--ink);
             color: white;
             padding: 30px;
             border-radius: 15px;
@@ -340,14 +357,14 @@
 
         .cta-button {
             display: inline-block;
-            background: white;
-            color: #667eea;
+            background: var(--card);
+            color: var(--honey-deep);
             padding: 12px 30px;
             border-radius: 8px;
             text-decoration: none;
             font-weight: 600;
             margin-top: 15px;
-            transition: transform 0.3s ease;
+            transition: transform var(--dur-fast) var(--ease-out);
         }
 
         .cta-button:hover {
@@ -355,83 +372,56 @@
         }
 
         .use-case {
-            background: #f8f9ff;
+            background: var(--well);
             padding: 20px;
             border-radius: 10px;
             margin: 15px 0;
         }
 
         .use-case h4 {
-            color: #667eea;
+            color: var(--honey-deep);
             margin-bottom: 10px;
-        }
-
-        .back-link {
-            display: inline-block;
-            margin-top: 30px;
-            padding: 12px 24px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: transform 0.3s ease;
-        }
-
-        .back-link:hover {
-            transform: translateY(-2px);
         }
 
         .related-links {
             margin-top: 30px;
             padding: 20px;
-            background: #f8f9ff;
+            background: var(--well);
             border-radius: 10px;
         }
 
         .related-links h3 {
             margin-top: 0;
-            color: #667eea;
+            color: var(--honey-deep);
         }
 
         .related-links a {
-            color: #667eea;
+            color: var(--honey-deep);
             text-decoration: none;
         }
 
         .related-links a:hover {
             text-decoration: underline;
         }
-
-        footer {
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid #ddd;
-            text-align: center;
-        }
-
-        footer a {
-            color: #667eea;
-            text-decoration: none;
-            margin: 0 10px;
-        }
-
-        footer a:hover {
-            text-decoration: underline;
-        }
-
-        footer p {
-            margin-top: 10px;
-            color: #999;
-            font-size: 14px;
-        }
+        /* Honey clay finishing touches for shared components */
+        h1 { font-weight: 800; letter-spacing: -0.3px; }
+        .cta-box, .hero-cta { border-radius: 28px; }
+        .cta-button, .hero-cta a { background: var(--honey); color: var(--ink); border-radius: 16px; font-weight: 800; box-shadow: var(--clay-button); transition: transform var(--dur-fast) var(--ease-out); }
+        .cta-button:active, .hero-cta a:active { transform: scale(0.97); }
+        .step-number, .method-number, .fix-number { background: var(--honey); color: var(--ink); }
+        img { max-width: 100%; height: auto; }
+        /* Text inside dark boxes takes the box's light colour */
+        [style*="background: var(--ink)"] :is(p, ul, ol, li, strong, h2, h3, h4, span) { color: inherit; }
+        .recommended .method-number, .recommended .fix-number { color: #fff; }
+        /* Wide tables scroll inside the card on phones instead of stretching the page */
+        @media (max-width: 600px) { table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; } .endpoint-url { word-break: break-all; } }
     </style>
 </head>
 <body>
     <header class="site-header">
         <div class="header-content">
-            <a href="/" class="logo">HoneyConvert</a>
-            <button class="nav-toggle" onclick="document.getElementById('navLinks').classList.toggle('active')">☰</button>
+            <a href="/" class="logo"><span class="logo-mark" aria-hidden="true"></span>HoneyConvert</a>
+            <button class="nav-toggle" aria-label="Toggle navigation" onclick="document.getElementById('navLinks').classList.toggle('active')">☰</button>
             <nav class="nav-links" id="navLinks">
                 <a href="/">Home</a>
                 <a href="/how-to-convert-heic-to-png">Guides</a>
@@ -450,16 +440,16 @@
     <main class="main-content">
         <div class="container">
         <h1>HEIC vs PNG: Which Format is Better?</h1>
-        <div class="meta" style="color: #666; font-size: 14px; margin-bottom: 20px;">Last updated: January 2026 | Complete format comparison</div>
+        <div class="meta" style="color: var(--muted); font-size: 14px; margin-bottom: 20px;">Last updated: January 2026 | Complete format comparison</div>
 
         <!-- Quick Answer Box for Featured Snippets -->
-        <div class="quick-answer" style="background: linear-gradient(135deg, #f0f7ff 0%, #e8f4ff 100%); border-left: 4px solid #667eea; padding: 20px; margin: 20px 0; border-radius: 0 8px 8px 0;">
-            <p style="font-size: 13px; color: #666; margin: 0 0 8px 0; text-transform: uppercase; letter-spacing: 0.5px;">Quick Answer</p>
-            <p style="font-size: 18px; line-height: 1.6; margin: 0; color: #333;">HEIC is 50% smaller than PNG but only works on Apple devices. PNG works everywhere and supports transparency. For sharing photos: convert to PNG. For iPhone storage: keep HEIC. For web: use WebP.</p>
+        <div class="quick-answer" style="background: var(--well); border-left: 4px solid var(--honey); padding: 20px; margin: 20px 0; border-radius: 0 8px 8px 0;">
+            <p style="font-size: 13px; color: var(--muted); margin: 0 0 8px 0; text-transform: uppercase; letter-spacing: 0.5px;">Quick Answer</p>
+            <p style="font-size: 18px; line-height: 1.6; margin: 0; color: var(--ink);">HEIC is 50% smaller than PNG but only works on Apple devices. PNG works everywhere and supports transparency. For sharing photos: convert to PNG. For iPhone storage: keep HEIC. For web: use WebP.</p>
         </div>
 
         <!-- Featured Snippet Optimized Comparison Table -->
-        <div class="snippet-box" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 25px; border-radius: 15px; margin: 20px 0;">
+        <div class="snippet-box" style="background: var(--ink); color: white; padding: 25px; border-radius: 15px; margin: 20px 0;">
             <p style="font-weight: 600; margin-bottom: 15px; font-size: 17px;">HEIC vs PNG: Key Differences</p>
             <table style="width: 100%; border-collapse: collapse; background: rgba(255,255,255,0.15); border-radius: 10px; overflow: hidden;">
                 <tr style="background: rgba(255,255,255,0.2);">
@@ -494,12 +484,12 @@
         <div style="margin: 30px 0; text-align: center;">
             <img src="/static/images/heic-comparison.png"
                  alt="HEIC vs PNG file size and quality comparison showing HEIC saves 50% storage on iPhone photos"
-                 style="max-width: 100%; height: auto; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);"
+                 style="max-width: 100%; height: auto; border-radius: 12px; box-shadow: 0 4px 15px rgba(var(--tint), 0.1);"
                  width="800" height="400" loading="lazy">
-            <p style="font-size: 14px; color: #666; margin-top: 10px;">File size comparison: HEIC vs PNG and other formats</p>
+            <p style="font-size: 14px; color: var(--muted); margin-top: 10px;">File size comparison: HEIC vs PNG and other formats</p>
         </div>
 
-        <p>Choosing between HEIC and PNG can significantly impact your photos' file size, quality, and compatibility. This guide compares both formats to help you make the right choice. If you need to convert, see our <a href="/how-to-convert-heic-to-png" style="color: #667eea;">step-by-step HEIC to PNG conversion guide</a>.</p>
+        <p>Choosing between HEIC and PNG can significantly impact your photos' file size, quality, and compatibility. This guide compares both formats to help you make the right choice. If you need to convert, see our <a href="/how-to-convert-heic-to-png" style="color: var(--honey-deep);">step-by-step HEIC to PNG conversion guide</a>.</p>
 
         <h2>Quick Comparison</h2>
 
@@ -625,7 +615,7 @@
                 <li>You need lossless quality</li>
                 <li>Editing in third-party software</li>
             </ul>
-            <p style="margin-top: 10px;"><a href="/" style="color: #667eea; font-weight: 600;">Convert HEIC to PNG now →</a></p>
+            <p style="margin-top: 10px;"><a href="/" style="color: var(--honey-deep); font-weight: 600;">Convert HEIC to PNG now →</a></p>
         </div>
 
         <h2>File Size Comparison</h2>
@@ -661,7 +651,7 @@
         </table>
 
         <div class="highlight-box">
-            <p><strong>Pro Tip:</strong> For the best balance of quality and file size when sharing photos online, consider converting HEIC to WebP using our <a href="/" style="color: #667eea;">free converter</a>. It offers near-PNG quality with file sizes close to HEIC. Have many photos? Use our <a href="/batch-convert-heic" style="color: #667eea;">batch converter</a> to process them all at once.</p>
+            <p><strong>Pro Tip:</strong> For the best balance of quality and file size when sharing photos online, consider converting HEIC to WebP using our <a href="/" style="color: var(--honey-deep);">free converter</a>. It offers near-PNG quality with file sizes close to HEIC. Have many photos? Use our <a href="/batch-convert-heic" style="color: var(--honey-deep);">batch converter</a> to process them all at once.</p>
         </div>
 
         <div class="cta-box">
@@ -671,10 +661,10 @@
         </div>
 
         <!-- Converter CTA -->
-        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 12px; margin: 30px 0; text-align: center;">
+        <div style="background: var(--ink); padding: 30px; border-radius: 12px; margin: 30px 0; text-align: center;">
             <h3 style="color: white; margin: 0 0 10px 0;">Need to Convert HEIC Files?</h3>
             <p style="color: rgba(255,255,255,0.9); margin: 0 0 20px 0;">Use our free online converter - no software needed.</p>
-            <a href="/" style="background: white; color: #667eea; padding: 12px 30px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-block;">Convert HEIC Free →</a>
+            <a href="/" style="background: var(--card); color: var(--honey-deep); padding: 12px 30px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-block;">Convert HEIC Free →</a>
         </div>
 
         <h2>Frequently Asked Questions</h2>
@@ -701,7 +691,7 @@
         <p>HEIC uses advanced HEVC compression that intelligently removes image data humans can't perceive. PNG preserves every single pixel, even imperceptible details. A 12MP iPhone photo might be 1.5MB in HEIC but 8MB+ in PNG - that's over 5x larger for no visible quality improvement.</p>
 
         <h3>Should I keep photos as HEIC or convert to PNG?</h3>
-        <p>Keep photos as HEIC if you mainly use Apple devices and want to save storage. Convert to PNG when sharing with Windows/Android users, uploading to websites, or when you need universal compatibility. You can always <a href="/" style="color: #667eea;">convert HEIC to PNG</a> when needed.</p>
+        <p>Keep photos as HEIC if you mainly use Apple devices and want to save storage. Convert to PNG when sharing with Windows/Android users, uploading to websites, or when you need universal compatibility. You can always <a href="/" style="color: var(--honey-deep);">convert HEIC to PNG</a> when needed.</p>
 
         <div class="related-links">
             <h3>Related Articles</h3>
