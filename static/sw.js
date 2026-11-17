@@ -1,6 +1,6 @@
 // HoneyConvert Service Worker
-const CACHE_NAME = 'honeyconvert-v1';
-const STATIC_CACHE = 'honeyconvert-static-v1';
+const CACHE_NAME = 'honeyconvert-v2';
+const STATIC_CACHE = 'honeyconvert-static-v2';
 
 // Assets to cache immediately on install
 const PRECACHE_ASSETS = [

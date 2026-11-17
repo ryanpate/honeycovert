@@ -4,14 +4,16 @@
 from PIL import Image, ImageDraw, ImageFont
 import os
 
+INK = (58, 42, 16)  # #3a2a10
+
 def create_gradient(width, height):
-    """Create a purple gradient image"""
+    """Create a honey gradient image"""
     img = Image.new('RGB', (width, height))
     draw = ImageDraw.Draw(img)
 
-    # Purple gradient from #667eea to #764ba2
-    start_color = (102, 126, 234)  # #667eea
-    end_color = (118, 75, 162)     # #764ba2
+    # Honey gradient from #ffd67a to #f0a514
+    start_color = (255, 214, 122)  # #ffd67a
+    end_color = (240, 165, 20)     # #f0a514
 
     for y in range(height):
         for x in range(width):
@@ -43,18 +45,17 @@ def create_favicon():
     text_height = bbox[3] - bbox[1]
     x = (size - text_width) // 2
     y = (size - text_height) // 2 - 5
-    draw.text((x, y), text, fill='white', font=font)
+    draw.text((x, y), text, fill=INK, font=font)
 
     return img
 
-def create_apple_touch_icon():
-    """Create 180x180 apple touch icon"""
-    size = 180
+def create_apple_touch_icon(size=180):
+    """Create a square app icon (180x180 apple touch icon by default)"""
     img = create_gradient(size, size)
     draw = ImageDraw.Draw(img)
 
     try:
-        font = ImageFont.truetype("/System/Library/Fonts/Helvetica.ttc", 120)
+        font = ImageFont.truetype("/System/Library/Fonts/Helvetica.ttc", size * 2 // 3)
     except:
         font = ImageFont.load_default()
 
@@ -63,8 +64,8 @@ def create_apple_touch_icon():
     text_width = bbox[2] - bbox[0]
     text_height = bbox[3] - bbox[1]
     x = (size - text_width) // 2
-    y = (size - text_height) // 2 - 10
-    draw.text((x, y), text, fill='white', font=font)
+    y = (size - text_height) // 2 - size // 18
+    draw.text((x, y), text, fill=INK, font=font)
 
     return img
 
@@ -77,7 +78,7 @@ def create_og_image():
     # Draw white card
     card_margin = 80
     card_rect = [card_margin, card_margin, width - card_margin, height - card_margin]
-    draw.rounded_rectangle(card_rect, radius=20, fill='white')
+    draw.rounded_rectangle(card_rect, radius=40, fill=(255, 250, 240))
 
     # Draw logo circle
     logo_center = (220, 315)
@@ -85,7 +86,7 @@ def create_og_image():
     draw.ellipse(
         [logo_center[0] - logo_radius, logo_center[1] - logo_radius,
          logo_center[0] + logo_radius, logo_center[1] + logo_radius],
-        fill=(102, 126, 234)
+        fill=(247, 183, 51)
     )
 
     try:
@@ -97,19 +98,19 @@ def create_og_image():
         logo_font = title_font = subtitle_font = feature_font = ImageFont.load_default()
 
     # Draw "H" in logo
-    draw.text((190, 265), "H", fill='white', font=logo_font)
+    draw.text((190, 265), "H", fill=INK, font=logo_font)
 
     # Draw title
-    draw.text((340, 200), "HoneyConvert", fill='#333333', font=title_font)
+    draw.text((340, 200), "HoneyConvert", fill=INK, font=title_font)
 
     # Draw subtitle
-    draw.text((340, 290), "Free HEIC to PNG, JPEG, WebP Converter", fill='#666666', font=subtitle_font)
+    draw.text((340, 290), "Free HEIC to PNG, JPEG, WebP Converter", fill='#75603c', font=subtitle_font)
 
     # Draw features
-    draw.text((340, 370), "No Registration  |  Instant Download  |  100% Free", fill=(102, 126, 234), font=feature_font)
+    draw.text((340, 370), "No Registration  |  Instant Download  |  100% Free", fill=(143, 86, 0), font=feature_font)
 
     # Draw conversion info
-    draw.text((340, 430), "Convert iPhone Photos: HEIC/HEIF > PNG | JPEG | WebP", fill='#888888', font=feature_font)
+    draw.text((340, 430), "Convert iPhone Photos: HEIC/HEIF > PNG | JPEG | WebP", fill='#75603c', font=feature_font)
 
     return img
 
@@ -124,6 +125,10 @@ if __name__ == '__main__':
     print("Generating apple-touch-icon.png...")
     apple_icon = create_apple_touch_icon()
     apple_icon.save(os.path.join(static_dir, 'apple-touch-icon.png'), 'PNG')
+
+    for icon_size in (192, 512):
+        print(f"Generating icon-{icon_size}.png...")
+        create_apple_touch_icon(icon_size).save(os.path.join(static_dir, f'icon-{icon_size}.png'), 'PNG')
 
     print("Generating og-image.png...")
     og_image = create_og_image()

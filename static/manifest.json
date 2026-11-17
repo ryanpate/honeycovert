@@ -4,8 +4,8 @@
   "description": "Free online tool to convert iPhone HEIC photos to PNG, JPEG, or WebP format instantly.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#667eea",
-  "theme_color": "#667eea",
+  "background_color": "#fbf3df",
+  "theme_color": "#f7b733",
   "orientation": "portrait-primary",
   "scope": "/",
   "icons": [

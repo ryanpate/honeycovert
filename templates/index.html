@@ -38,7 +38,7 @@
 
     <!-- PWA -->
     <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#667eea">
+    <meta name="theme-color" content="#f7b733">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="HoneyConvert">
@@ -187,6 +187,46 @@
     </script>
     
     <style>
+        :root {
+            /* Honey clay palette */
+            --cream: #fbf3df;
+            --card: #fffaf0;
+            --well: #f6ead0;
+            --honey: #f7b733;
+            --honey-pale: #fde6a6;
+            --honey-deep: #8f5600;
+            --ink: #3a2a10;
+            --muted: #75603c;
+            --tint: 150, 95, 10;   /* shadow hue: clay shadows are tinted, never grey */
+
+            --clay-raised:
+                inset 4px 4px 10px rgba(255, 255, 255, 0.9),
+                inset -6px -6px 14px rgba(var(--tint), 0.10),
+                0 22px 40px -18px rgba(var(--tint), 0.45);
+            --clay-well:
+                inset 4px 4px 10px rgba(var(--tint), 0.16),
+                inset -4px -4px 10px rgba(255, 255, 255, 0.9);
+
+            /* Motion */
+            --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+            --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+            --ease-in: cubic-bezier(0.55, 0, 1, 0.45);
+            --dur-fast: 120ms;
+            --dur-menu: 200ms;
+            --dur-exit: 160ms;
+            --stagger: 30ms;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-delay: 0s !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                transition-delay: 0s !important;
+            }
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -194,8 +234,13 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: ui-rounded, "SF Pro Rounded", "Nunito", system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            color: var(--ink);
+            /* Pastel honey glow behind the hero, plain cream below */
+            background:
+                radial-gradient(900px 520px at 50% -80px, #ffd67a 0%, var(--honey-pale) 45%, rgba(253, 230, 166, 0) 75%),
+                var(--cream);
+            background-repeat: no-repeat;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -203,12 +248,34 @@
             padding: 0;
         }
 
+        /* Fine grain over the whole page so nothing reads as flat fill */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.35  0 0 0 0 0.22  0 0 0 0 0.02  0 0 0 0.55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+            mix-blend-mode: multiply;
+            opacity: 0.22;
+        }
+
+        a, button, select, input, summary {
+            font-family: inherit;
+        }
+
+        :focus-visible {
+            outline: 3px solid var(--honey-deep);
+            outline-offset: 2px;
+        }
+
         /* Site Header Navigation */
         .site-header {
             width: 100%;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(251, 243, 223, 0.86);
             backdrop-filter: blur(10px);
-            padding: 15px 20px;
+            -webkit-backdrop-filter: blur(10px);
+            padding: 10px 20px;
             position: sticky;
             top: 0;
             z-index: 1000;
@@ -220,69 +287,106 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            position: relative;
         }
 
         .logo {
-            color: white;
-            font-size: 24px;
-            font-weight: 700;
+            color: var(--ink);
+            font-size: 22px;
+            font-weight: 800;
             text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            min-height: 44px;
         }
 
-        .logo:hover {
-            opacity: 0.9;
+        .logo-mark {
+            width: 26px;
+            height: 29px;
+            background: var(--honey);
+            clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+            box-shadow: inset 3px 3px 5px rgba(255, 255, 255, 0.6), inset -4px -4px 6px rgba(160, 90, 0, 0.35);
         }
 
         .nav-links {
             display: flex;
-            gap: 25px;
+            gap: 6px;
             align-items: center;
         }
 
         .nav-links a {
-            color: white;
+            color: var(--ink);
             text-decoration: none;
             font-size: 15px;
-            font-weight: 500;
-            opacity: 0.9;
-            transition: opacity 0.3s ease;
+            font-weight: 600;
+            padding: 10px 14px;
+            border-radius: 16px;
+            transition: background-color var(--dur-fast) var(--ease-out);
         }
 
         .nav-links a:hover {
-            opacity: 1;
+            background: rgba(var(--tint), 0.12);
         }
 
         .nav-toggle {
             display: none;
-            background: none;
+            width: 44px;
+            height: 44px;
+            background: var(--card);
             border: none;
-            color: white;
-            font-size: 24px;
+            border-radius: 16px;
+            box-shadow: var(--clay-raised);
+            color: var(--ink);
+            font-size: 22px;
             cursor: pointer;
+            transition: transform var(--dur-fast) var(--ease-out);
+        }
+
+        .nav-toggle:active {
+            transform: scale(0.97);
         }
 
         @media (max-width: 768px) {
+            .nav-toggle {
+                display: block;
+            }
+
+            /* Dropdown grows from the toggle (top right) and returns to it */
             .nav-links {
-                display: none;
                 position: absolute;
-                top: 100%;
-                left: 0;
+                top: calc(100% + 8px);
                 right: 0;
-                background: rgba(102, 126, 234, 0.98);
+                min-width: 210px;
                 flex-direction: column;
-                padding: 20px;
-                gap: 15px;
+                align-items: stretch;
+                gap: 2px;
+                padding: 10px;
+                background: var(--card);
+                border-radius: 24px;
+                box-shadow: var(--clay-raised);
+                transform-origin: top right;
+                opacity: 0;
+                transform: scale(0.95);
+                visibility: hidden;
+                transition:
+                    opacity var(--dur-exit) var(--ease-in),
+                    transform var(--dur-exit) var(--ease-in),
+                    visibility 0s linear var(--dur-exit);
             }
 
             .nav-links.active {
-                display: flex;
+                opacity: 1;
+                transform: scale(1);
+                visibility: visible;
+                transition:
+                    opacity var(--dur-menu) var(--ease-out),
+                    transform var(--dur-menu) var(--ease-out),
+                    visibility 0s;
             }
 
-            .nav-toggle {
-                display: block;
+            .nav-links a {
+                padding: 12px 14px;
             }
         }
 
@@ -292,111 +396,125 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 30px 20px;
+            padding: 28px 20px 30px;
             width: 100%;
         }
 
         /* Hero Section */
         .hero {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 18px;
             max-width: 700px;
         }
 
         .hero h1 {
-            color: white;
-            font-size: 42px;
-            margin-bottom: 15px;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            font-size: 44px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            line-height: 1.1;
+            margin-bottom: 12px;
         }
 
         .hero p {
-            color: rgba(255,255,255,0.9);
+            color: var(--muted);
             font-size: 18px;
-            line-height: 1.6;
-            margin-bottom: 20px;
+            line-height: 1.55;
         }
 
         /* Trust Badges */
         .trust-badges {
             display: flex;
             justify-content: center;
-            gap: 30px;
+            gap: 10px;
             flex-wrap: wrap;
-            margin-top: 20px;
+            margin-bottom: 26px;
         }
 
         .trust-badge {
             display: flex;
             align-items: center;
             gap: 8px;
-            color: rgba(255,255,255,0.95);
+            background: var(--card);
+            border-radius: 999px;
+            padding: 8px 14px;
+            box-shadow:
+                inset 2px 2px 5px rgba(255, 255, 255, 0.9),
+                inset -3px -3px 6px rgba(var(--tint), 0.10),
+                0 8px 14px -8px rgba(var(--tint), 0.4);
             font-size: 14px;
-            font-weight: 500;
+            font-weight: 600;
         }
 
         .trust-badge-icon {
-            font-size: 20px;
+            font-size: 16px;
         }
 
+        /* Converter card */
         .container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            padding: 40px;
+            background: var(--card);
+            border-radius: 36px;
+            box-shadow: var(--clay-raised);
+            padding: 36px;
             max-width: 600px;
             width: 100%;
         }
 
         .converter-title {
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 24px;
+            margin-bottom: 18px;
+            font-size: 22px;
+            font-weight: 800;
             text-align: center;
-        }
-
-        .subtitle {
-            color: #666;
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 14px;
         }
 
         .upload-area {
-            border: 3px dashed #667eea;
-            border-radius: 15px;
-            padding: 40px;
+            border: 3px dashed var(--honey);
+            border-radius: 28px;
+            padding: 34px 20px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.3s ease;
-            background: #f8f9ff;
+            background: var(--well);
+            box-shadow: var(--clay-well);
+            transition: background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
         }
 
         .upload-area:hover {
-            border-color: #764ba2;
-            background: #f0f1ff;
+            border-color: var(--honey-deep);
         }
 
         .upload-area.dragover {
-            border-color: #764ba2;
-            background: #e8e9ff;
-            transform: scale(1.02);
+            border-color: var(--honey-deep);
+            background: var(--honey-pale);
         }
 
         .upload-icon {
-            font-size: 48px;
-            margin-bottom: 15px;
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 14px;
+            display: grid;
+            place-items: center;
+            border-radius: 22px;
+            background: var(--honey);
+            color: var(--ink);
+            box-shadow:
+                inset 4px 4px 8px rgba(255, 255, 255, 0.55),
+                inset -5px -5px 10px rgba(160, 90, 0, 0.28),
+                0 12px 18px -8px rgba(190, 120, 0, 0.55);
+            transition: transform var(--dur-menu) var(--ease-out);
+        }
+
+        .upload-area:hover .upload-icon,
+        .upload-area.dragover .upload-icon {
+            transform: translateY(-3px);
         }
 
         .upload-text {
-            color: #667eea;
             font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 10px;
+            font-weight: 700;
+            margin-bottom: 6px;
         }
 
         .upload-hint {
-            color: #999;
+            color: var(--muted);
             font-size: 14px;
         }
 
@@ -405,7 +523,7 @@
         }
 
         .file-list {
-            margin-top: 20px;
+            margin-top: 16px;
             max-height: 200px;
             overflow-y: auto;
         }
@@ -414,15 +532,25 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 10px;
-            background: #f5f5f5;
-            border-radius: 8px;
+            padding: 8px 8px 8px 14px;
+            background: var(--well);
+            border-radius: 16px;
             margin-bottom: 8px;
         }
 
+        /* Newly added rows rise in, 30ms apart */
+        .file-item.enter {
+            animation: rise var(--dur-menu) var(--ease-out) backwards;
+            animation-delay: calc(var(--i) * var(--stagger));
+        }
+
+        @keyframes rise {
+            from { opacity: 0; transform: translateY(6px); }
+        }
+
         .file-name {
-            color: #333;
             font-size: 14px;
+            font-weight: 600;
             flex: 1;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -430,86 +558,227 @@
         }
 
         .file-size {
-            color: #999;
+            color: var(--muted);
             font-size: 12px;
             margin-left: 10px;
         }
 
         .remove-btn {
-            background: #ff4757;
-            color: white;
+            position: relative;
+            width: 32px;
+            height: 32px;
+            flex-shrink: 0;
+            background: #f8d9d0;
+            color: #7a2a18;
             border: none;
-            border-radius: 5px;
-            padding: 5px 10px;
+            border-radius: 12px;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 13px;
             margin-left: 10px;
+            transition: transform var(--dur-fast) var(--ease-out);
         }
 
-        .remove-btn:hover {
-            background: #ff3838;
+        /* 44px hit area around the 32px button */
+        .remove-btn::before {
+            content: "";
+            position: absolute;
+            inset: -6px;
         }
 
-        .convert-btn {
-            width: 100%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            padding: 15px;
-            font-size: 16px;
+        .remove-btn:active {
+            transform: scale(0.97);
+        }
+
+        .file-count {
+            text-align: center;
+            color: var(--muted);
             font-weight: 600;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: all 0.3s ease;
+            font-size: 14px;
+            margin-top: 10px;
         }
 
-        .convert-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        /* Options */
+        .options-row {
+            margin-top: 18px;
+            display: flex;
+            gap: 14px;
+        }
+
+        .option-group {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .option-group label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 6px;
+            font-size: 13px;
+        }
+
+        .option-select {
+            width: 100%;
+            min-height: 46px;
+            padding: 10px 34px 10px 14px;
+            border: none;
+            border-radius: 16px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--ink);
+            background-color: var(--well);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%233a2a10' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            box-shadow: var(--clay-well);
+            appearance: none;
+            -webkit-appearance: none;
+            cursor: pointer;
+        }
+
+        .more-options {
+            margin-top: 14px;
+        }
+
+        .more-options summary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 44px;
+            padding: 0 6px;
+            color: var(--muted);
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            list-style: none;
+            border-radius: 12px;
+        }
+
+        .more-options summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .more-options summary::before {
+            content: "";
+            width: 8px;
+            height: 8px;
+            border-right: 2px solid currentColor;
+            border-bottom: 2px solid currentColor;
+            transform: rotate(-45deg);
+            transition: transform var(--dur-menu) var(--ease-in-out);
+        }
+
+        .more-options[open] summary::before {
+            transform: rotate(45deg);
+        }
+
+        .more-options .options-row {
+            margin-top: 4px;
+            animation: rise var(--dur-menu) var(--ease-out);
+        }
+
+        .format-hint {
+            margin-top: 14px;
+            font-size: 13px;
+            color: var(--muted);
+            text-align: center;
+        }
+
+        @media (max-width: 340px) {
+            .options-row {
+                flex-direction: column;
+            }
+        }
+
+        /* Convert button */
+        .convert-btn {
+            position: relative;
+            width: 100%;
+            min-height: 54px;
+            background: var(--honey);
+            color: var(--ink);
+            border: none;
+            border-radius: 20px;
+            padding: 15px;
+            font-size: 17px;
+            font-weight: 800;
+            cursor: pointer;
+            margin-top: 18px;
+            box-shadow:
+                inset 4px 4px 8px rgba(255, 255, 255, 0.55),
+                inset -5px -5px 10px rgba(160, 90, 0, 0.28),
+                0 14px 22px -10px rgba(190, 120, 0, 0.6);
+            transition: transform var(--dur-fast) var(--ease-out);
+        }
+
+        /* Pressed shadow sits on its own layer so only opacity animates */
+        .convert-btn::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            pointer-events: none;
+            opacity: 0;
+            box-shadow: inset 5px 5px 12px rgba(160, 90, 0, 0.35), inset -3px -3px 8px rgba(255, 255, 255, 0.45);
+            transition: opacity var(--dur-fast) var(--ease-out);
+        }
+
+        .convert-btn:active:not(:disabled) {
+            transform: scale(0.97);
+        }
+
+        .convert-btn:active:not(:disabled)::after {
+            opacity: 1;
         }
 
         .convert-btn:disabled {
-            background: #ccc;
+            background: #ece1c8;
+            color: #9a8a68;
+            box-shadow: none;
             cursor: not-allowed;
-            transform: none;
         }
 
         .status-message {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 10px;
+            margin-top: 16px;
+            padding: 14px;
+            border-radius: 18px;
             text-align: center;
-            font-weight: 600;
+            font-weight: 700;
             display: none;
         }
 
         .status-message.success {
-            background: #d4edda;
-            color: #155724;
+            background: #dcebd0;
+            color: #2f5320;
             display: block;
+            animation: pulse 300ms var(--ease-in-out);
         }
 
         .status-message.error {
-            background: #f8d7da;
-            color: #721c24;
+            background: #f8d9d0;
+            color: #7a2a18;
             display: block;
+            animation: rise var(--dur-menu) var(--ease-out);
         }
 
         .status-message.info {
-            background: #d1ecf1;
-            color: #0c5460;
+            background: var(--honey-pale);
+            color: var(--ink);
             display: block;
+            animation: rise var(--dur-menu) var(--ease-out);
+        }
+
+        @keyframes pulse {
+            50% { transform: scale(1.06); }
         }
 
         .loader {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #667eea;
+            border: 4px solid var(--well);
+            border-top: 4px solid var(--honey);
             border-radius: 50%;
             width: 40px;
             height: 40px;
             animation: spin 1s linear infinite;
-            margin: 20px auto;
+            margin: 18px auto 0;
             display: none;
         }
 
@@ -518,102 +787,35 @@
             100% { transform: rotate(360deg); }
         }
 
-        .file-count {
-            text-align: center;
-            color: #667eea;
-            font-weight: 600;
-            margin-top: 15px;
-        }
-
-        .options-row {
-            margin-top: 20px;
-            display: flex;
-            gap: 15px;
-        }
-
-        .option-group {
-            flex: 1;
-            padding: 15px;
-            background: #f8f9ff;
-            border-radius: 10px;
-            border: 2px solid #667eea;
-        }
-
-        .option-group label {
-            display: block;
-            color: #333;
-            font-weight: 600;
-            margin-bottom: 8px;
-            font-size: 14px;
-        }
-
-        .option-select {
-            width: 100%;
-            padding: 10px;
-            border: 2px solid #667eea;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            color: #333;
-            background: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .option-select:hover {
-            border-color: #764ba2;
-        }
-
-        .option-select:focus {
-            outline: none;
-            border-color: #764ba2;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        .format-hint {
-            margin-top: 12px;
-            font-size: 12px;
-            color: #666;
-            text-align: center;
-            padding: 8px;
-            background: #f0f1ff;
-            border-radius: 6px;
-        }
-
-        @media (max-width: 500px) {
-            .options-row {
-                flex-direction: column;
-            }
-        }
-
-        /* Tab Navigation */
+        /* Tabs: a segmented control, used often so it only fades */
         .tab-nav {
             display: flex;
-            border-bottom: 2px solid #eee;
-            margin-bottom: 25px;
+            gap: 4px;
+            padding: 4px;
+            margin-bottom: 18px;
+            background: var(--well);
+            border-radius: 18px;
+            box-shadow: var(--clay-well);
         }
 
         .tab-btn {
             flex: 1;
-            padding: 12px 20px;
+            min-height: 44px;
+            padding: 8px 12px;
             border: none;
+            border-radius: 14px;
             background: none;
             font-size: 15px;
-            font-weight: 600;
-            color: #888;
+            font-weight: 700;
+            color: var(--muted);
             cursor: pointer;
-            transition: all 0.3s ease;
-            border-bottom: 3px solid transparent;
-            margin-bottom: -2px;
-        }
-
-        .tab-btn:hover {
-            color: #667eea;
+            transition: background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
         }
 
         .tab-btn.active {
-            color: #667eea;
-            border-bottom-color: #667eea;
+            color: var(--ink);
+            background: var(--card);
+            box-shadow: 0 4px 8px -4px rgba(var(--tint), 0.45);
         }
 
         .tab-content {
@@ -628,42 +830,160 @@
         .url-input-group {
             display: flex;
             gap: 10px;
-            margin-bottom: 15px;
         }
 
         .url-input {
             flex: 1;
-            padding: 14px 16px;
-            border: 2px solid #667eea;
-            border-radius: 10px;
-            font-size: 14px;
-            transition: all 0.3s ease;
-        }
-
-        .url-input:focus {
-            outline: none;
-            border-color: #764ba2;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            min-width: 0;
+            min-height: 48px;
+            padding: 12px 16px;
+            border: none;
+            border-radius: 16px;
+            font-size: 16px;
+            color: var(--ink);
+            background: var(--well);
+            box-shadow: var(--clay-well);
         }
 
         .url-input::placeholder {
-            color: #aaa;
+            color: #9a8a68;
         }
 
         .url-hint {
+            font-size: 14px;
+            color: var(--muted);
+            margin-bottom: 12px;
+        }
+
+        /* About section */
+        .about-tool-section {
+            max-width: 800px;
+            width: 100%;
+            margin-top: 34px;
+        }
+
+        .about-card {
+            background: var(--card);
+            border-radius: 36px;
+            padding: 34px;
+            box-shadow: var(--clay-raised);
+        }
+
+        .about-card h2 {
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 14px;
+            text-align: center;
+        }
+
+        .about-card p {
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 22px;
+        }
+
+        .about-tile {
+            text-align: center;
+            padding: 20px;
+            background: var(--well);
+            border-radius: 24px;
+            box-shadow: var(--clay-well);
+        }
+
+        .about-tile-icon {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .about-tile-title {
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .about-tile-text {
             font-size: 13px;
-            color: #666;
-            margin-bottom: 20px;
-            padding: 12px;
-            background: #f8f9ff;
-            border-radius: 8px;
-            border-left: 3px solid #667eea;
+            color: var(--muted);
+            line-height: 1.5;
+        }
+
+        .about-card .about-footnote {
+            font-size: 14px;
+            text-align: center;
+            margin-top: 22px;
+        }
+
+        .about-card a {
+            color: var(--honey-deep);
+            font-weight: 700;
+        }
+
+        /* Guides Section */
+        .guides-section {
+            max-width: 800px;
+            width: 100%;
+            margin-top: 34px;
+        }
+
+        .guides-title {
+            font-size: 20px;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .guides-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 14px;
+        }
+
+        .guide-card {
+            background: var(--card);
+            border-radius: 22px;
+            padding: 16px;
+            min-height: 64px;
+            text-decoration: none;
+            box-shadow:
+                inset 3px 3px 8px rgba(255, 255, 255, 0.9),
+                inset -4px -4px 10px rgba(var(--tint), 0.10),
+                0 14px 22px -14px rgba(var(--tint), 0.45);
+            transition: transform var(--dur-fast) var(--ease-out);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .guide-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .guide-card:active {
+            transform: scale(0.97);
+        }
+
+        .guide-icon {
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .guide-text {
+            color: var(--ink);
+            font-size: 14px;
+            font-weight: 700;
+            line-height: 1.3;
         }
 
         /* Site Footer */
         .site-footer {
             width: 100%;
-            background: rgba(0, 0, 0, 0.2);
+            background: var(--ink);
+            border-radius: 40px 40px 0 0;
             padding: 50px 20px 20px;
             margin-top: 40px;
         }
@@ -683,13 +1003,13 @@
         }
 
         .footer-logo {
-            color: white;
+            color: var(--honey);
             font-size: 24px;
-            font-weight: 700;
+            font-weight: 800;
         }
 
         .footer-tagline {
-            color: rgba(255,255,255,0.7);
+            color: rgba(251, 243, 223, 0.75);
             font-size: 14px;
             margin-top: 8px;
         }
@@ -705,37 +1025,37 @@
         }
 
         .footer-column h4 {
-            color: white;
+            color: var(--cream);
             font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 15px;
+            font-weight: 700;
+            margin-bottom: 12px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
         .footer-column a {
             display: block;
-            color: rgba(255,255,255,0.8);
+            color: rgba(251, 243, 223, 0.8);
             text-decoration: none;
             font-size: 14px;
-            margin-bottom: 10px;
-            transition: color 0.3s ease;
+            padding: 6px 0;
+            transition: color var(--dur-fast) var(--ease-out);
         }
 
         .footer-column a:hover {
-            color: white;
+            color: var(--honey);
         }
 
         .footer-bottom {
             max-width: 1200px;
             margin: 40px auto 0;
             padding-top: 20px;
-            border-top: 1px solid rgba(255,255,255,0.2);
+            border-top: 1px solid rgba(251, 243, 223, 0.2);
             text-align: center;
         }
 
         .footer-bottom p {
-            color: rgba(255,255,255,0.6);
+            color: rgba(251, 243, 223, 0.65);
             font-size: 13px;
         }
 
@@ -750,72 +1070,82 @@
                 gap: 25px;
             }
 
-            .footer-brand {
-                text-align: center;
-            }
-
+            .footer-brand,
             .footer-column {
                 text-align: center;
             }
         }
 
-        /* Guides Section */
-        .guides-section {
-            max-width: 800px;
-            width: 100%;
-            margin-top: 30px;
-        }
-
-        .guides-title {
-            color: white;
-            font-size: 18px;
-            font-weight: 600;
-            text-align: center;
-            margin-bottom: 15px;
-            opacity: 0.95;
-        }
-
-        .guides-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 12px;
-        }
-
-        .guide-card {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
-            padding: 16px;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .guide-card:hover {
-            background: rgba(255, 255, 255, 0.25);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-        }
-
-        .guide-icon {
-            font-size: 24px;
-            flex-shrink: 0;
-        }
-
-        .guide-text {
-            color: white;
-            font-size: 13px;
-            font-weight: 500;
-            line-height: 1.3;
-        }
-
+        /* Phones: get the upload box onto the first screen */
         @media (max-width: 600px) {
+            .main-content {
+                padding: 14px 16px 24px;
+            }
+
+            .hero {
+                order: 0;
+                margin-bottom: 14px;
+            }
+
+            .hero h1 {
+                font-size: 28px;
+                margin-bottom: 6px;
+            }
+
+            .hero p {
+                font-size: 15px;
+                line-height: 1.45;
+            }
+
+            .container {
+                order: 1;
+                padding: 18px;
+                border-radius: 30px;
+            }
+
+            /* Badges move below the converter so they don't push it down */
+            .trust-badges {
+                order: 2;
+                margin: 22px 0 0;
+            }
+
+            .about-tool-section,
+            .guides-section {
+                order: 3;
+            }
+
+            .converter-title {
+                display: none;
+            }
+
+            .upload-area {
+                padding: 22px 16px;
+            }
+
+            .options-row {
+                gap: 10px;
+            }
+
+            .option-select {
+                padding: 10px 24px 10px 10px;
+                background-position: right 9px center;
+            }
+
+            .upload-icon {
+                width: 54px;
+                height: 54px;
+                border-radius: 18px;
+                margin-bottom: 10px;
+            }
+
+            .about-card {
+                padding: 24px 20px;
+                border-radius: 30px;
+            }
+
             .guides-grid {
                 grid-template-columns: repeat(2, 1fr);
-                gap: 10px;
+                gap: 12px;
             }
 
             .guide-card {
@@ -826,99 +1156,8 @@
             }
 
             .guide-text {
-                font-size: 12px;
+                font-size: 13px;
             }
-        }
-
-        /* Testimonials Section */
-        .testimonials-section {
-            max-width: 900px;
-            width: 100%;
-            margin-top: 40px;
-        }
-
-        .testimonials-title {
-            color: white;
-            font-size: 24px;
-            font-weight: 600;
-            text-align: center;
-            margin-bottom: 8px;
-        }
-
-        .testimonials-subtitle {
-            color: rgba(255,255,255,0.8);
-            font-size: 14px;
-            text-align: center;
-            margin-bottom: 25px;
-        }
-
-        .testimonials-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-        }
-
-        @media (max-width: 768px) {
-            .testimonials-grid {
-                grid-template-columns: 1fr;
-                gap: 15px;
-            }
-        }
-
-        .testimonial-card {
-            background: white;
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-        }
-
-        .testimonial-stars {
-            color: #ffc107;
-            font-size: 18px;
-            margin-bottom: 12px;
-            letter-spacing: 2px;
-        }
-
-        .testimonial-text {
-            color: #555;
-            font-size: 14px;
-            line-height: 1.6;
-            margin-bottom: 16px;
-            font-style: italic;
-        }
-
-        .testimonial-author {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .testimonial-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
-            font-size: 16px;
-        }
-
-        .testimonial-info {
-            flex: 1;
-        }
-
-        .testimonial-name {
-            color: #333;
-            font-weight: 600;
-            font-size: 14px;
-        }
-
-        .testimonial-role {
-            color: #888;
-            font-size: 12px;
         }
     </style>
 </head>
@@ -927,9 +1166,10 @@
     <header class="site-header">
         <div class="header-content">
             <a href="/" class="logo">
+                <span class="logo-mark" aria-hidden="true"></span>
                 <span>HoneyConvert</span>
             </a>
-            <button class="nav-toggle" onclick="toggleNav()" aria-label="Toggle navigation">☰</button>
+            <button class="nav-toggle" id="navToggle" onclick="toggleNav()" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navLinks">☰</button>
             <nav class="nav-links" id="navLinks">
                 <a href="/">Home</a>
                 <a href="/how-to-convert-heic-to-png">Guides</a>
@@ -945,25 +1185,26 @@
         <section class="hero">
             <h1>Free HEIC Image Converter</h1>
             <p>Convert iPhone and iPad photos instantly. No signup required, no software to install. Your files stay private and are deleted immediately after conversion.</p>
-            <div class="trust-badges">
-                <div class="trust-badge">
-                    <span class="trust-badge-icon">✓</span>
-                    <span>100% Free</span>
-                </div>
-                <div class="trust-badge">
-                    <span class="trust-badge-icon">🔒</span>
-                    <span>Secure & Private</span>
-                </div>
-                <div class="trust-badge">
-                    <span class="trust-badge-icon">⚡</span>
-                    <span>Instant Download</span>
-                </div>
-                <div class="trust-badge">
-                    <span class="trust-badge-icon">📦</span>
-                    <span>Batch Convert</span>
-                </div>
-            </div>
         </section>
+
+        <div class="trust-badges">
+            <div class="trust-badge">
+                <span class="trust-badge-icon">✓</span>
+                <span>100% Free</span>
+            </div>
+            <div class="trust-badge">
+                <span class="trust-badge-icon">🔒</span>
+                <span>Secure & Private</span>
+            </div>
+            <div class="trust-badge">
+                <span class="trust-badge-icon">⚡</span>
+                <span>Instant Download</span>
+            </div>
+            <div class="trust-badge">
+                <span class="trust-badge-icon">📦</span>
+                <span>Batch Convert</span>
+            </div>
+        </div>
 
         <div class="container">
             <h2 class="converter-title">Convert Your HEIC Files</h2>
@@ -977,9 +1218,11 @@
             <!-- Upload Tab -->
             <div id="uploadTab" class="tab-content active">
                 <div class="upload-area" id="uploadArea">
-                    <div class="upload-icon">📤</div>
-                    <div class="upload-text">Click to select files or drag & drop</div>
-                    <div class="upload-hint">Supports .HEIC and .HEIF files</div>
+                    <div class="upload-icon" aria-hidden="true">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="M7 9l5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>
+                    </div>
+                    <div class="upload-text">Choose HEIC photos</div>
+                    <div class="upload-hint">or drag &amp; drop .HEIC / .HEIF files here</div>
                 </div>
 
                 <input type="file" id="fileInput" multiple accept=".heic,.heif">
@@ -1000,7 +1243,7 @@
 
         <div class="options-row">
             <div class="option-group">
-                <label for="formatSelect">Output Format:</label>
+                <label for="formatSelect">Output Format</label>
                 <select id="formatSelect" class="option-select">
                     <option value="png">PNG (Lossless)</option>
                     <option value="jpeg">JPEG (Smaller)</option>
@@ -1008,7 +1251,7 @@
                 </select>
             </div>
             <div class="option-group">
-                <label for="sizeSelect">Output Size:</label>
+                <label for="sizeSelect">Output Size</label>
                 <select id="sizeSelect" class="option-select">
                     <option value="100">Original (100%)</option>
                     <option value="75" selected>Large (75%)</option>
@@ -1017,9 +1260,11 @@
                 </select>
             </div>
         </div>
+        <details class="more-options">
+        <summary>Rotate &amp; crop</summary>
         <div class="options-row">
             <div class="option-group">
-                <label for="rotateSelect">Rotate:</label>
+                <label for="rotateSelect">Rotate</label>
                 <select id="rotateSelect" class="option-select">
                     <option value="0">No Rotation</option>
                     <option value="90">90° Clockwise</option>
@@ -1028,7 +1273,7 @@
                 </select>
             </div>
             <div class="option-group">
-                <label for="cropSelect">Crop:</label>
+                <label for="cropSelect">Crop</label>
                 <select id="cropSelect" class="option-select">
                     <option value="none">No Crop (Original)</option>
                     <option value="1:1">Square (1:1)</option>
@@ -1040,6 +1285,7 @@
                 </select>
             </div>
         </div>
+        </details>
         <div class="format-hint" id="formatHint">PNG: Best quality, larger files. No compression artifacts.</div>
 
         <button id="convertBtn" class="convert-btn" disabled>Convert to PNG</button>
@@ -1049,30 +1295,30 @@
     </div>
 
     <!-- About This Tool Section -->
-    <section class="about-tool-section" style="max-width: 800px; width: 100%; margin-top: 30px;">
-        <div style="background: white; border-radius: 20px; padding: 35px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);">
-            <h2 style="color: #333; font-size: 22px; margin-bottom: 20px; text-align: center;">About HoneyConvert</h2>
-            <p style="color: #555; line-height: 1.7; margin-bottom: 15px;">HoneyConvert launched in December 2025 as a simple, privacy-focused tool for converting iPhone photos. We're a small independent team building tools to solve real problems.</p>
+    <section class="about-tool-section">
+        <div class="about-card">
+            <h2>About HoneyConvert</h2>
+            <p>HoneyConvert launched in December 2025 as a simple, privacy-focused tool for converting iPhone photos. We're a small independent team building tools to solve real problems.</p>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 25px;">
-                <div style="text-align: center; padding: 20px; background: #f8f9ff; border-radius: 12px;">
-                    <div style="font-size: 28px; margin-bottom: 8px;">🔒</div>
-                    <div style="font-weight: 600; color: #333; margin-bottom: 5px;">Privacy First</div>
-                    <div style="font-size: 13px; color: #666;">Files deleted immediately after conversion. No tracking, no accounts.</div>
+            <div class="about-grid">
+                <div class="about-tile">
+                    <div class="about-tile-icon">🔒</div>
+                    <div class="about-tile-title">Privacy First</div>
+                    <div class="about-tile-text">Files deleted immediately after conversion. No tracking, no accounts.</div>
                 </div>
-                <div style="text-align: center; padding: 20px; background: #f8f9ff; border-radius: 12px;">
-                    <div style="font-size: 28px; margin-bottom: 8px;">💻</div>
-                    <div style="font-weight: 600; color: #333; margin-bottom: 5px;">Open & Transparent</div>
-                    <div style="font-size: 13px; color: #666;">Built with Python & Flask. No hidden fees or subscriptions.</div>
+                <div class="about-tile">
+                    <div class="about-tile-icon">💻</div>
+                    <div class="about-tile-title">Open & Transparent</div>
+                    <div class="about-tile-text">Built with Python & Flask. No hidden fees or subscriptions.</div>
                 </div>
-                <div style="text-align: center; padding: 20px; background: #f8f9ff; border-radius: 12px;">
-                    <div style="font-size: 28px; margin-bottom: 8px;">⚡</div>
-                    <div style="font-weight: 600; color: #333; margin-bottom: 5px;">Fast & Simple</div>
-                    <div style="font-size: 13px; color: #666;">Upload, convert, download. No software to install.</div>
+                <div class="about-tile">
+                    <div class="about-tile-icon">⚡</div>
+                    <div class="about-tile-title">Fast & Simple</div>
+                    <div class="about-tile-text">Upload, convert, download. No software to install.</div>
                 </div>
             </div>
 
-            <p style="color: #666; font-size: 14px; text-align: center; margin-top: 25px;">Questions? <a href="/contact" style="color: #667eea;">Contact us</a> or learn more <a href="/about" style="color: #667eea;">about our team</a>.</p>
+            <p class="about-footnote">Questions? <a href="/contact">Contact us</a> or learn more <a href="/about">about our team</a>.</p>
         </div>
     </section>
 
@@ -1168,6 +1414,7 @@
         const formatHint = document.getElementById('formatHint');
 
         let selectedFiles = [];
+        let renderedCount = 0;
         let currentTab = 'upload';
 
         // Tab switching functionality
@@ -1264,6 +1511,10 @@
             selectedFiles.forEach((file, index) => {
                 const fileItem = document.createElement('div');
                 fileItem.className = 'file-item';
+                if (index >= renderedCount) {
+                    fileItem.classList.add('enter');
+                    fileItem.style.setProperty('--i', Math.min(index - renderedCount, 10));
+                }
                 
                 const fileName = document.createElement('span');
                 fileName.className = 'file-name';
@@ -1276,6 +1527,7 @@
                 const removeBtn = document.createElement('button');
                 removeBtn.className = 'remove-btn';
                 removeBtn.textContent = '✕';
+                removeBtn.setAttribute('aria-label', `Remove ${file.name}`);
                 removeBtn.onclick = () => removeFile(index);
                 
                 fileItem.appendChild(fileName);
@@ -1283,6 +1535,8 @@
                 fileItem.appendChild(removeBtn);
                 fileList.appendChild(fileItem);
             });
+
+            renderedCount = selectedFiles.length;
 
             if (selectedFiles.length > 0) {
                 fileCount.textContent = `${selectedFiles.length} file${selectedFiles.length > 1 ? 's' : ''} selected`;
@@ -1497,10 +1751,19 @@
         }
 
         // Mobile navigation toggle
-        function toggleNav() {
+        function toggleNav(force) {
             const navLinks = document.getElementById('navLinks');
-            navLinks.classList.toggle('active');
+            const open = navLinks.classList.toggle('active', force);
+            document.getElementById('navToggle').setAttribute('aria-expanded', open);
         }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') toggleNav(false);
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.site-header')) toggleNav(false);
+        });
 
         // Register Service Worker for PWA
         if ('serviceWorker' in navigator) {
