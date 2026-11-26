@@ -398,6 +398,7 @@
             align-items: center;
             padding: 28px 20px 30px;
             width: 100%;
+            position: relative;
         }
 
         /* Hero Section */
@@ -475,6 +476,44 @@
             background: var(--well);
             box-shadow: var(--clay-well);
             transition: background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
+            position: relative;
+        }
+
+        /* Hero motion (static/motion/hero-bee.js). The image is the finished frame:
+           it is what shows with JavaScript off or reduced motion on, and it marks
+           where the moving bee comes to rest. */
+        .hero-bee-still {
+            position: absolute;
+            top: 10px;
+            right: 4px;
+            width: clamp(58px, 16.4vw, 82px);
+            height: auto;
+            pointer-events: none;
+            user-select: none;
+        }
+
+        .hero-bee-live .hero-bee-still {
+            visibility: hidden;
+        }
+
+        .hero-bee-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        /* Wide screens: the bee rests out in the right-hand margin, level with the sub-line */
+        @media (min-width: 1180px) {
+            .hero-bee-still {
+                width: 138px;
+                top: -300px;
+                right: auto;
+                left: calc(100% + 36px + (100vw - 600px) / 4);
+                transform: translateX(-50%);
+            }
         }
 
         .upload-area:hover {
@@ -1223,6 +1262,7 @@
                     </div>
                     <div class="upload-text">Choose HEIC photos</div>
                     <div class="upload-hint">or drag &amp; drop .HEIC / .HEIF files here</div>
+                    <img class="hero-bee-still" src="/static/motion/hero-bee.webp?v=1" width="350" height="563" alt="" aria-hidden="true">
                 </div>
 
                 <input type="file" id="fileInput" multiple accept=".heic,.heif">
@@ -1778,5 +1818,6 @@
             });
         }
     </script>
+    <script src="/static/motion/hero-bee.js?v=1" defer></script>
 </body>
 </html>
